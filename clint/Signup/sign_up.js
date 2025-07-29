@@ -48,9 +48,8 @@ form.addEventListener( "submit", async function ( e )
 
         if ( response.ok )
         {
-            localStorage.setItem( "email", data.Email );
 
-
+            localStorage.setItem( "email", result.email );
             window.location.href = "../otp/otp_verify.html";
 
         } else

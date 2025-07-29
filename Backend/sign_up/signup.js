@@ -56,9 +56,9 @@ exports.sing_up = async ( req, res ) =>
         } );
 
 
-      // await user.save();
-      // await sendOTP( email,name, otp );
-        res.status( 200 ).json( { Email :email } );
+         await user.save();
+         await sendOTP( email,name, otp );
+        res.status( 200 ).json( { email:email } );
     }
 
     catch ( error )

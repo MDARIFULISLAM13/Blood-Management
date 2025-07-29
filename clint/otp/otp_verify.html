@@ -90,8 +90,8 @@
     </div>
 
     <script>
-        const backendURL = "http://localhost:4341/api"; // change to your backend
-        const currentUserId = localStorage.getItem( "userId" ); // store userId during signup
+       const backendURL = "http://localhost:4341/api";
+        const email = localStorage.getItem( "email" );  // এখানে তোমার আগের email key ব্যবহার করো
 
         document.getElementById( "verifyOtpBtn" ).addEventListener( "click", async () =>
         {
@@ -103,12 +103,18 @@
                 return;
             }
 
+            if ( !email )
+            {
+                alert( "Email not found! Please signup again." );
+                return;
+            }
+
             try
             {
-                const res = await fetch( `${backendURL}/verify-otp`, {
+                const res = await fetch( `${backendURL}/verify`, {  // তোমার backend এ verify API url `/api/verify`
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify( { userId: currentUserId, otp } ),
+                    body: JSON.stringify( { email, otp } ),
                 } );
 
                 const data = await res.json();
@@ -116,7 +122,8 @@
                 if ( res.ok )
                 {
                     alert( "Email verified! You can now login." );
-                    window.location.href = "index.html";
+                    localStorage.removeItem( "email" );  // ভেরিফিকেশন শেষে email localStorage থেকে রিমুভ করে দাও
+                    window.location.href = "../log in/members/member.html";  // লগইন পেজ বা হোম পেজে নিয়ে যাও
                 } else
                 {
                     alert( data.message || "Invalid OTP" );
@@ -127,6 +134,7 @@
                 console.error( err );
             }
         } );
+
     </script>
 
 </body>

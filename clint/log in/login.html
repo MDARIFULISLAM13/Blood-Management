@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Options</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(to right, #667eea, #764ba2);
+        }
+
+        .container {
+            text-align: center;
+            background: #fff;
+            padding: 40px 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 400px;
+        }
+
+        h2 {
+            margin-bottom: 25px;
+            color: #333;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.3s;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        .member {
+            background: #667eea;
+        }
+
+        .member:hover {
+            background: #5a67d8;
+        }
+
+        .moderator {
+            background: #38b2ac;
+        }
+
+        .moderator:hover {
+            background: #319795;
+        }
+
+        .admin {
+            background: #e53e3e;
+        }
+
+        .admin:hover {
+            background: #c53030;
+        }
+
+        @media(max-width: 480px) {
+            .btn {
+                font-size: 14px;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Select Login Type</h2>
+        <button class="btn member" onclick="location.href='member_login.html'">Members Login</button>
+        <button class="btn moderator" onclick="location.href='moderator_login.html'">Moderator Login</button>
+        <button class="btn admin" onclick="location.href='admin_login.html'">Admin Login</button>
+    </div>
+</body>
+
+</html>

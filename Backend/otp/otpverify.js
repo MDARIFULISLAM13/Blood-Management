@@ -2,9 +2,13 @@ const User = require( "../models/usersmodel" );
 
 exports.verifyOtp = async ( req, res ) =>
 {
+
+
     try
     {
         const { email, otp } = req.body;
+
+      
         const user = await User.findOne( { email } );
         if ( !user ) return res.status( 400 ).json( { message: 'User not found' } );
         if ( user.otp !== otp ) return res.status( 400 ).json( { message: 'Invalid OTP' } );
