@@ -1,4 +1,5 @@
-const { jwtGen } = require( "../../jwt/jwt" );
+
+const { jwtGen_member } = require( "../../jwt/jwt" );
 const User = require( "../../models/usersmodel" );
 
 
@@ -27,8 +28,8 @@ exports.members_log_in = async ( req, res ) =>
             if ( !user ) return res.status( 401 ).json( { message: 'Invalid credentials' } );
             if ( !user.isVerified ) return res.status( 401 ).json( { message: 'Please verify your email first' } );
             if ( user.password !== password ) return res.status( 401 ).json( { message: 'Invalid credentials' } );
-            
-            const token = jwtGen( user._id, user.name );
+
+            const token = jwtGen_member( user._id, user.name );
             return res.json( { token } );
 
 
@@ -48,7 +49,7 @@ exports.members_log_in = async ( req, res ) =>
             if ( !user.isVerified ) return res.status( 401 ).json( { message: 'Please verify your email first' } );
             if ( user.password !== password ) return res.status( 401 ).json( { message: 'Invalid credentials' } );
 
-            const token = jwtGen( user._id, user.name );
+            const token = jwtGen_member( user._id, user.name );
             return res.json( { token } );
 
 

@@ -112,13 +112,13 @@
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify( { details, password } )
                 } );
-
+                
                 const data = await res.json();
 
                 if ( res.ok )
                 {
                     alert( "Login successful ✅" );
-                    localStorage.setItem( "token", data.token ); 
+                    localStorage.setItem( "token_member", data.token );
                     window.location.href = "../../index page/index.html"; // redirect to home
                 } else
                 {
