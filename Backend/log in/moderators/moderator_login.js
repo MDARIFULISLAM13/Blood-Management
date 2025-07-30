@@ -1,6 +1,8 @@
-const { jwtGen_moderator } = require( "../../jwt/jwt" );
-const User = require( "../../models/usersmodel" );
 
+
+
+const { jwtGen_moderator } = require( "../../jwt/Moderator/jwt_moderator" );
+const User = require( "../../models/usersmodel" );
 
 exports.moderator_login = async ( req, res ) =>
 {
@@ -29,8 +31,12 @@ exports.moderator_login = async ( req, res ) =>
             if ( user.password !== password ) return res.status( 401 ).json( { message: 'Invalid credentials' } );
             if ( !user.moderator ) return res.status( 401 ).json( { message: 'You are not Moderator' } );
 
-            const token = jwtGen_moderator( user._id, user.name );
+
+
+            const token = jwtGen_moderator( user.email );
             return res.json( { token } );
+
+
 
 
         } catch ( error )
@@ -49,8 +55,7 @@ exports.moderator_login = async ( req, res ) =>
             if ( !user.isVerified ) return res.status( 401 ).json( { message: 'Please verify your email first' } );
             if ( user.password !== password ) return res.status( 401 ).json( { message: 'Invalid credentials' } );
             if ( !user.moderator ) return res.status( 401 ).json( { message: 'You are not Moderator' } );
-
-            const token = jwtGen_moderator( user._id, user.name );
+            const token = jwtGen_moderator( user.email );
             return res.json( { token } );
 
 

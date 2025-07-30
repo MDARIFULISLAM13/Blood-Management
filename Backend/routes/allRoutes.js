@@ -10,6 +10,8 @@ const { members_details } = require( '../Accounts_Controller/Accounts/members/me
 const { jwtVerify_member, jwtGen_member } = require( '../jwt/Member/jwt_member' );
 const { update_member } = require( '../Accounts_Controller/Update Account/Members/update_member_info' );
 const { change_password } = require( '../password/Change Password/change_passwoed' );
+const { moderator_login } = require( '../log in/moderators/moderator_login' );
+const { moderator_details } = require( '../Accounts_Controller/Accounts/moderators/moderators_account' );
 
 const router = express.Router();
 
@@ -25,8 +27,8 @@ router.post( '/jwtVerify_member', jwtVerify_member );
 router.post( '/jwtgen_member', jwtGen_member );
 router.post( '/update_member', update_member );
 router.post( '/change_password', change_password );
-
-
+router.post( '/moderator/login', moderator_login );
+router.post( '/moderator_details', moderator_details );
 
 
 module.exports = router;

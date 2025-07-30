@@ -119,7 +119,7 @@
                 {
                     alert( "Moderator login successful ✅" );
                     localStorage.setItem( "token_mod", data.token ); // Save JWT
-                    window.location.href = "../../index page/index.html"; // redirect to dashboard
+                    window.location.href = "../../Accounts_Controller/Accounts/moderators/moderator.html"; // redirect to home
                 } else
                 {
                     errorMsg.textContent = data.message || "Invalid login credentials";
