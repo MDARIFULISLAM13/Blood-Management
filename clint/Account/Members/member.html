@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Member Account</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .account-box {
+            background: #fff;
+            padding: 25px;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        .account-box h2 {
+            margin-bottom: 20px;
+            text-align: center;
+            color: #333;
+        }
+
+        .info {
+            margin: 10px 0;
+            font-size: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            background: #f8f9fa;
+            transition: 0.3s;
+        }
+
+        .info:hover {
+            background: #eaf3ff;
+            transform: translateX(3px);
+        }
+
+        .logout-btn {
+            margin-top: 25px;
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            background: #ff4b5c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .update_details {
+            margin-top: 25px;
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            background: #6310cf;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .change_password {
+            margin-top: 25px;
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            background: #0c8a8a;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #4d08bd;
+            transform: scale(1.05);
+        }
+
+        .update_details:hover {
+            background: #e70606;
+            transform: scale(1.05);
+        }
+
+        .change_password:hover {
+            background: #e00202;
+            transform: scale(1.05);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 500px) {
+            .account-box {
+                padding: 20px;
+            }
+
+            .info {
+                font-size: 14px;
+            }
+
+            .logout-btn {
+                font-size: 14px;
+            }
+
+            .update_details {
+                font-size: 14px;
+            }
+
+            .change_password {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="account-box">
+        <h2>My Account</h2>
+        <div id="memberInfo">Loading...</div>
+        <button class="update_details"
+            onclick="window.location.href='../../update/members/update_member_det.html'">Update</button>
+        <button class="change_password" onclick="window.location.href='../../password/change_password.html'">Change
+            Password</button>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+
+    </div>
+
+    <script>
+        const loginPage = "../../log in/members/member.html";
+        const token = localStorage.getItem( "token_member" );
+        const member_url = "http://localhost:4341/api/member_details";
+
+        if ( !token )
+        {
+            alert( "Token not found!" );
+            window.location.href = loginPage;
+        } else
+        {
+            fetch( member_url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify( { token } )
+            } )
+                .then( res => res.json() )
+                .then( data =>
+                {
+                    if ( !data.success )
+                    {
+                        alert( data.message || "Invalid token!" );
+                        localStorage.removeItem( "token_member" );
+                        window.location.href = loginPage;
+                    } else
+                    {
+                        showMember( data.data );
+                    }
+                } )
+                .catch( err =>
+                {
+                    console.error( err );
+                    alert( "Server error!" );
+                    localStorage.removeItem( "token_member" );
+                    window.location.href = loginPage;
+                } );
+        }
+
+        function showMember( user )
+        {
+            const infoDiv = document.getElementById( "memberInfo" );
+            let date = user.last_donate_date ? new Date( user.last_donate_date ).toLocaleDateString() : "N/A";
+
+            infoDiv.innerHTML = `
+        <div class="info"><b>👤 Name:</b> ${user.name}</div>
+        <div class="info"><b>📍 Division:</b> ${user.Division}</div>
+        <div class="info"><b>🏙 District:</b> ${user.District}</div>
+        <div class="info"><b>📌 Upazila:</b> ${user.upazila}</div>
+        <div class="info"><b>📞 Mobile:</b> ${user.mobile}</div>
+        <div class="info"><b>✉️ Email:</b> ${user.email}</div>
+        <div class="info"><b>🩸 Blood Group:</b> ${user.blood_group}</div>
+        <div class="info"><b>📅 Last Donate Date:</b> ${date}</div>
+      `;
+        }
+
+        function logout()
+        {
+            localStorage.removeItem( "token_member" );
+            window.location.href = loginPage;
+        }
+    </script>
+</body>
+
+</html>

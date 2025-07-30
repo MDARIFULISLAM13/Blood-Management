@@ -1,24 +1,29 @@
 const jwt = require( 'jsonwebtoken' );
 
-exports.jwtGen_member = function ( userId, username )
+
+
+exports.jwtGen_member = function ( email )
 {
+
     return jwt.sign(
-        { id: userId, username: username },
-        process.env.JWT_SECRET_member
+        { email: email },               // শুধু email payload
+        process.env.JWT_SECRET_member   // secret key
+
     );
 };
+
 
 exports.jwtVerify_member = function ( token )
 {
     try
     {
-        const decoded = jwt.verify( token, process.env.JWT_SECRET_member );
-        return decoded;  // Valid হলে ডিকোডেড ডাটা রিটার্ন করবে
+        return jwt.verify( token, process.env.JWT_SECRET_member );
     } catch ( err )
     {
-        return null;     // Invalid বা expired হলে null রিটার্ন করবে
+        return null;
     }
 };
+
 
 exports.jwtGen_moderator = function ( userId, username )
 {

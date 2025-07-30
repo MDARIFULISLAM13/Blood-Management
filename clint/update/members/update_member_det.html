@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="bn">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Update Details</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            padding: 0;
+            margin: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(120deg, #e0f7fa, #fff);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .update-container {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            padding: 25px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .update-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        form input,
+        form select {
+            width: 100%;
+            padding: 12px 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        form input:focus,
+        form select:focus {
+            border-color: #28a745;
+            outline: none;
+        }
+
+        form label {
+            font-size: 14px;
+            color: #555;
+            margin-top: 10px;
+            display: block;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: #28a745;
+            color: white;
+            font-size: 16px;
+            margin-top: 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        @media (max-width: 480px) {
+            .update-container {
+                padding: 20px;
+            }
+
+            form input,
+            form select,
+            button {
+                font-size: 14px;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="update-container">
+        <form id="updateForm">
+            <h2>Update My Details</h2>
+
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name" required />
+
+            <label for="divisionSelect">Division</label>
+            <select id="divisionSelect" name="Division" required>
+                <option value="">-- Select a Division --</option>
+            </select>
+
+            <label for="districtSelect">District</label>
+            <select id="districtSelect" name="District" disabled required>
+                <option value="">-- Select a District --</option>
+            </select>
+
+            <label for="upazilaSelect">Upazila</label>
+            <select id="upazilaSelect" name="upazila" disabled required>
+                <option value="">-- Select an Upazila --</option>
+            </select>
+
+            <label for="mobile">Mobile Number (11 digits)</label>
+            <input type="text" id="mobile" name="mobile" required />
+
+            <label for="blood">Blood Group</label>
+            <select id="blood" name="blood_group" required>
+                <option value="">Select Blood Group</option>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+            </select>
+
+            <label for="last_donate_date">Last Donate Date</label>
+            <input type="date" id="last_donate_date" name="last_donate_date" required />
+
+            <button type="submit">Update Details</button>
+        </form>
+    </div>
+
+    <script>
+        const token = localStorage.getItem( "token_member" );
+        const member_url = "http://localhost:4341/api/member_details"; // get user details
+        const update_url = "http://localhost:4341/api/update_member"; // update API
+
+        if ( !token )
+        {
+            alert( "Token missing, login again!" );
+            window.location.href = "../log in/members/member.html";
+        }
+
+        const divisionSelect = document.getElementById( 'divisionSelect' );
+        const districtSelect = document.getElementById( 'districtSelect' );
+        const upazilaSelect = document.getElementById( 'upazilaSelect' );
+        let divisions = [];
+
+        // Load Division/District/Upazila Data
+        function loadLocationData()
+        {
+            fetch( 'http://localhost:4341/api/location_data' )
+                .then( res => res.json() )
+                .then( jsonData =>
+                {
+                    divisions = jsonData;
+                    populateDivisions();
+                } )
+                .catch( err =>
+                {
+                    console.error( err );
+                    alert( "Failed to load location data" );
+                } );
+        }
+
+        function populateDivisions()
+        {
+            clearSelect( divisionSelect );
+            addOption( divisionSelect, '', '-- Select a Division --' );
+            divisions.forEach( div => addOption( divisionSelect, div.name, div.name ) );
+        }
+
+        function populateDistricts( divisionName )
+        {
+            clearSelect( districtSelect );
+            addOption( districtSelect, '', '-- Select a District --' );
+            const division = divisions.find( d => d.name === divisionName );
+            if ( division )
+            {
+                division.districts.forEach( dist => addOption( districtSelect, dist.name, dist.name ) );
+                districtSelect.disabled = false;
+            }
+            clearSelect( upazilaSelect );
+            addOption( upazilaSelect, '', '-- Select an Upazila --' );
+            upazilaSelect.disabled = true;
+        }
+
+        function populateUpazilas( divisionName, districtName )
+        {
+            clearSelect( upazilaSelect );
+            addOption( upazilaSelect, '', '-- Select an Upazila --' );
+            const division = divisions.find( d => d.name === divisionName );
+            if ( division )
+            {
+                const district = division.districts.find( dist => dist.name === districtName );
+                if ( district )
+                {
+                    district.upazilas.forEach( upz => addOption( upazilaSelect, upz, upz ) );
+                    upazilaSelect.disabled = false;
+                }
+            }
+        }
+
+        function clearSelect( selectElem )
+        {
+            selectElem.innerHTML = "";
+        }
+
+        function addOption( selectElem, value, text )
+        {
+            const option = document.createElement( 'option' );
+            option.value = value;
+            option.text = text;
+            selectElem.appendChild( option );
+        }
+
+        divisionSelect.addEventListener( 'change', e =>
+        {
+            populateDistricts( e.target.value );
+        } );
+
+        districtSelect.addEventListener( 'change', e =>
+        {
+            populateUpazilas( divisionSelect.value, e.target.value );
+        } );
+
+        // Autofill User Data
+        function loadUserData()
+        {
+            fetch( member_url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify( { token } )
+            } )
+                .then( res => res.json() )
+                .then( data =>
+                {
+                    if ( data.success )
+                    {
+                        const user = data.data;
+                        document.getElementById( "name" ).value = user.name;
+                        document.getElementById( "mobile" ).value = user.mobile;
+                        document.getElementById( "blood" ).value = user.blood_group;
+                        document.getElementById( "last_donate_date" ).value = user.last_donate_date ? user.last_donate_date.split( 'T' )[0] : "";
+
+                        // location fill
+                        loadLocationData();
+                        setTimeout( () =>
+                        {
+                            divisionSelect.value = user.Division;
+                            populateDistricts( user.Division );
+                            districtSelect.value = user.District;
+                            populateUpazilas( user.Division, user.District );
+                            upazilaSelect.value = user.upazila;
+                        }, 500 );
+                    } else
+                    {
+                        alert( "Failed to load user details!" );
+                    }
+                } );
+        }
+
+        // Submit Update
+        document.getElementById( "updateForm" ).addEventListener( "submit", async function ( e )
+        {
+            e.preventDefault();
+            const data = {};
+            new FormData( this ).forEach( ( value, key ) => data[key] = value );
+
+            const response = await fetch( update_url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify( { token, updates: data } )
+            } );
+
+            const result = await response.json();
+            if ( result.success )
+            {
+                alert( "Details updated successfully!" );
+                window.location.href = "../../Account/Members/member.html";
+            } else
+            {
+                alert( result.message || "Update failed!" );
+            }
+        } );
+
+        document.addEventListener( "DOMContentLoaded", () =>
+        {
+            loadUserData();
+        } );
+    </script>
+</body>
+
+</html>
