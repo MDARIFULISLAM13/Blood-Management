@@ -1,11 +1,12 @@
-const { jwtVerify_member } = require( "../jwt/jwt" );
-const usersmodel = require( "../models/usersmodel" );
+const { jwtVerify_member } = require( "../../../jwt/Member/jwt_member" );
+const usersmodel = require( "../../../models/usersmodel" );
 
-exports.change_password = async ( req, res ) =>
+
+exports.update_member = async ( req, res ) =>
 {
     try
     {
-        const { token, old_password, new_password } = req.body;
+        const { token, updates } = req.body;
 
         if ( !token )
         {
@@ -28,20 +29,14 @@ exports.change_password = async ( req, res ) =>
             return res.status( 404 ).json( { success: false, message: "User not found" } );
         }
 
-        if ( user.password != old_password )
-        {
-            console.log( password );
-            // console.log( old_password );
-            return res.status( 404 ).json( { success: false, message: "Old password does Not match" } );
-
-        }
         // ✅ Step 3: Update করা
-        user.password = new_password;
+        Object.assign( user, updates ); // যেই field পাঠানো হবে শুধু সেটাই change হবে
         await user.save();
 
         res.json( {
             success: true,
-            message: "Password updated successfully",
+            message: "Profile updated successfully",
+            data: user
         } );
 
     } catch ( err )

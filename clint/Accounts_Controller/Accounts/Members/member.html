@@ -151,15 +151,15 @@
         <h2>My Account</h2>
         <div id="memberInfo">Loading...</div>
         <button class="update_details"
-            onclick="window.location.href='../../update/members/update_member_det.html'">Update</button>
-        <button class="change_password" onclick="window.location.href='../../password/change_password.html'">Change
+            onclick="window.location.href='../../Update Accounts/members/update_member_det.html'">Update</button>
+        <button class="change_password" onclick="window.location.href='../../../password/Change Password/change_password.html'">Change
             Password</button>
         <button class="logout-btn" onclick="logout()">Logout</button>
 
     </div>
 
     <script>
-        const loginPage = "../../log in/members/member.html";
+        const loginPage = "../../../log in/members/member.html";
         const token = localStorage.getItem( "token_member" );
         const member_url = "http://localhost:4341/api/member_details";
 

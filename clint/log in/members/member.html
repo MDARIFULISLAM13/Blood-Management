@@ -112,14 +112,14 @@
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify( { details, password } )
                 } );
-                
+
                 const data = await res.json();
 
                 if ( res.ok )
                 {
                     alert( "Login successful ✅" );
                     localStorage.setItem( "token_member", data.token );
-                    window.location.href = "../../index page/index.html"; // redirect to home
+                    window.location.href = "../../Accounts_Controller/Accounts/Members/member.html"; // redirect to home
                 } else
                 {
                     errorMsg.textContent = data.message || "Invalid login credentials";

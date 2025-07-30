@@ -1,7 +1,6 @@
 
-const { jwtGen_member } = require( "../../jwt/jwt" );
+const { jwtGen_member } = require( "../../jwt/Member/jwt_member" );
 const User = require( "../../models/usersmodel" );
-
 
 exports.members_log_in = async ( req, res ) =>
 {

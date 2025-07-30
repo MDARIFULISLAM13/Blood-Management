@@ -1,15 +1,14 @@
 
-
-
 const nodemailer = require( 'nodemailer' );
 const express = require( 'express' );
-const User = require( '../models/usersmodel' );
+
 const { sendOTP } = require( '../otp/otpsend' );
+const User = require( '../models/usersmodel' );
 require( 'dotenv' ).config();
 
 
 
-exports.sing_up = async ( req, res ) =>
+exports.sign_up = async ( req, res ) =>
 {
 
 
