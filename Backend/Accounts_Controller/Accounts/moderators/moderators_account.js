@@ -7,27 +7,26 @@ exports.moderator_details = async ( req, res ) =>
 {
     try
     {
-        const { token } = req.body;  // frontend থেকে শুধু token আসবে
+        const { token } = req.body;
 
         if ( !token )
         {
             return res.status( 400 ).json( {
                 success: false,
-                message: "Token not provided"
+                message: "Session Expired. Please log in again."
             } );
         }
 
-        // 🔹 Step 1: Token verify (helper ব্যবহার)
+
         const decoded =jwtVerify_moderator( token );
         if ( !decoded )
         {
             return res.status( 401 ).json( {
                 success: false,
-                message: "Invalid or expired token"
+                message: "Session Expired. Please log in again."
             } );
         }
 
-        // 🔹 Step 2: email থেকে user বের করা
         const user = await usersmodel.findOne( { email: decoded.email } );
 
         if ( !user )
@@ -38,7 +37,6 @@ exports.moderator_details = async ( req, res ) =>
             } );
         }
 
-        // 🔹 Step 3: data পাঠানো
         res.json( {
             success: true,
             data: {
@@ -54,7 +52,6 @@ exports.moderator_details = async ( req, res ) =>
         } );
     } catch ( err )
     {
-        console.error( "Error in members_details:", err.message );
         res.status( 500 ).json( {
             success: false,
             message: "Server error"

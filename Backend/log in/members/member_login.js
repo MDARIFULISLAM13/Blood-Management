@@ -24,11 +24,11 @@ exports.members_log_in = async ( req, res ) =>
         {
             const mobile = details;
             const user = await User.findOne( { mobile } );
-            if ( !user ) return res.status( 401 ).json( { message: 'Invalid credentials' } );
+
+
+            if ( !user ) return res.status( 401 ).json( { message: 'User Not Found' } );
             if ( !user.isVerified ) return res.status( 401 ).json( { message: 'Please verify your email first' } );
-            if ( user.password !== password ) return res.status( 401 ).json( { message: 'Invalid credentials' } );
-
-
+            if ( user.password !== password ) return res.status( 401 ).json( { message: 'Invalid username or password.' } );
 
             const token = jwtGen_member( user.email );
             return res.json( { token } );
@@ -47,9 +47,11 @@ exports.members_log_in = async ( req, res ) =>
         {
             const email = details;
             const user = await User.findOne( { email } );
-            if ( !user ) return res.status( 401 ).json( { message: 'Invalid credentials' } );
+
+            if ( !user ) return res.status( 401 ).json( { message: 'User Not Found' } );
             if ( !user.isVerified ) return res.status( 401 ).json( { message: 'Please verify your email first' } );
-            if ( user.password !== password ) return res.status( 401 ).json( { message: 'Invalid credentials' } );
+            if ( user.password !== password ) return res.status( 401 ).json( { message: 'Invalid username or password.' } );
+
 
             const token = jwtGen_member( user.email );
             return res.json( { token } );

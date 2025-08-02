@@ -28,10 +28,10 @@ exports.admin_login = async ( req, res ) =>
         {
             const mobile = details;
             const user = await User.findOne( { mobile } );
-            if ( !user ) return res.status( 401 ).json( { message: 'Invalid credentials' } );
+            if ( !user ) return res.status( 401 ).json( { message: 'User Not Found' } );
             if ( !user.isVerified ) return res.status( 401 ).json( { message: 'Please verify your email first' } );
-            if ( user.password !== password ) return res.status( 401 ).json( { message: 'Invalid credentials' } );
-            if ( !user.admin ) return res.status( 401 ).json( { message: 'You are not Admin' } );
+            if ( user.password !== password ) return res.status( 401 ).json( { message: 'Invalid username or password.' } );
+            if ( !user.admin ) return res.status( 401 ).json( { message: 'Access denied: You are not an admin' } );
 
             const token = jwtGen_admin( user.email );
             return res.json( { token } );
@@ -49,11 +49,10 @@ exports.admin_login = async ( req, res ) =>
         {
             const email = details;
             const user = await User.findOne( { email } );
-            if ( !user ) return res.status( 401 ).json( { message: 'Invalid credentials' } );
+            if ( !user ) return res.status( 401 ).json( { message: 'User Not Found' } );
             if ( !user.isVerified ) return res.status( 401 ).json( { message: 'Please verify your email first' } );
-            if ( user.password !== password ) return res.status( 401 ).json( { message: 'Invalid credentials' } );
-            if ( !user.admin ) return res.status( 401 ).json( { message: 'You are not Admin' } );
-
+            if ( user.password !== password ) return res.status( 401 ).json( { message: 'Invalid username or password.' } );
+            if ( !user.admin ) return res.status( 401 ).json( { message: 'Access denied: You are not an admin' } );
             const token = jwtGen_admin( user.email );
             return res.json( { token } );
 

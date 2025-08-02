@@ -6,8 +6,8 @@ exports.jwtGen_member = function ( email )
 {
 
     return jwt.sign(
-        { email: email },               // শুধু email payload
-        process.env.JWT_SECRET_member   // secret key
+        { email: email },
+        process.env.JWT_SECRET_member   
 
     );
 };

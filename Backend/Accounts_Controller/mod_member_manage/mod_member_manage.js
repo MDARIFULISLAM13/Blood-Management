@@ -31,7 +31,6 @@ exports.mod_member_manage = async ( req, res ) =>
     }
     catch ( err )
     {
-        console.error( "Error in members_details:", err.message );
         res.status( 500 ).json( {
             success: false,
             message: "Server error"
@@ -53,11 +52,11 @@ exports.update_last_donate_date = async ( req, res ) =>
         }
 
         user.last_donate_date = last_donate_date;
-        await user.save();   // DB তে save করলেই update হবে
+        await user.save();
 
         res.json( {
             success: true,
-            message: "Update Done",
+            message: "Date Update successfully",
             data: {
                 mobile: user.mobile,
                 last_donate_date: user.last_donate_date
@@ -65,7 +64,7 @@ exports.update_last_donate_date = async ( req, res ) =>
         } );
     } catch ( err )
     {
-        console.error( "Error in update_last_donate_date:", err.message );
+
         res.status( 500 ).json( {
             success: false,
             message: "Server error"

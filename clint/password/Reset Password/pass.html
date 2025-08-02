@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Reset Password</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .box {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 15px;
+        }
+
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        button {
+            width: 95%;
+            padding: 10px;
+            background: #4cafef;
+            border: none;
+            color: white;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 5px;
+        }
+
+        button:hover {
+            background: #2196f3;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #msg {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .home-btn {
+            background: #555 !important;
+        }
+
+        .home-btn:hover {
+            background: #333 !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <h2>Reset Password</h2>
+
+        <!-- Step 1: Send OTP -->
+        <div id="step1">
+            <input type="email" id="email" placeholder="Enter your email" />
+            <button onclick="requestOTP()">Send OTP</button>
+        </div>
+
+        <!-- Step 2: Verify OTP -->
+        <div id="step2" class="hidden">
+            <input type="text" id="otp" placeholder="Enter OTP" />
+            <button onclick="verifyOTP()">Verify OTP</button>
+        </div>
+
+        <!-- Step 3: Set New Password -->
+        <div id="step3" class="hidden">
+            <input type="password" id="newPassword" placeholder="Enter New Password" />
+            <button onclick="setPassword()">Set Password</button>
+        </div>
+
+        <!-- Always Visible Home Button -->
+        <button class="home-btn" onclick="goHome()">Home</button>
+
+        <p id="msg"></p>
+    </div>
+
+    <script>
+        let emailGlobal = "";
+
+        // STEP 1: Request OTP
+        async function requestOTP()
+        {
+            const email = document.getElementById( "email" ).value;
+            let res = await fetch( "http://localhost:4341/api/reset_password", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify( { email } )
+            } );
+            let data = await res.json();
+            document.getElementById( "msg" ).innerText = data.msg;
+            if ( data.status )
+            {
+                // backend থেকে আসা email save করছি
+                emailGlobal = data.email;
+                document.getElementById( "step1" ).classList.add( "hidden" );
+                document.getElementById( "step2" ).classList.remove( "hidden" );
+            }
+        }
+
+        // STEP 2: Verify OTP
+        async function verifyOTP()
+        {
+            const otp = document.getElementById( "otp" ).value;
+            let res = await fetch( "http://localhost:4341/api/verify", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify( { email: emailGlobal, otp } )
+            } );
+            let data = await res.json();
+            document.getElementById( "msg" ).innerText = data.message;
+            if ( data.message && data.message.includes( "verified" ) )
+            {
+                document.getElementById( "step2" ).classList.add( "hidden" );
+                document.getElementById( "step3" ).classList.remove( "hidden" );
+            }
+        }
+
+        // STEP 3: Set New Password
+        async function setPassword()
+        {
+            const newPassword = document.getElementById( "newPassword" ).value;
+            let res = await fetch( "http://localhost:4341/api/setNewPassword", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify( { email: emailGlobal, newPassword } )
+            } );
+            let data = await res.json();
+            document.getElementById( "msg" ).innerText = data.message;
+        }
+
+        // Always visible Home Button
+        function goHome()
+        {
+            window.location.href = "../../index page/index.html"; // তোমার home page এর link বসাও
+        }
+    </script>
+</body>
+
+</html>

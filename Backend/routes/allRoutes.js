@@ -21,6 +21,7 @@ const { change_password_admin } = require( '../password/Change Password/admin/ch
 const { update_admin } = require( '../Accounts_Controller/Update Account/Admin/update_admin' );
 const { get_moderators, add_moderator, remove_moderator } = require( '../Accounts_Controller/moderator Manage/admin' );
 const { search_blood } = require( '../index page' );
+const { reset_password, setNewPassword } = require( '../password/Reset Password/reset' );
 
 const router = express.Router();
 
@@ -49,4 +50,6 @@ router.post( '/get_moderators', get_moderators );
 router.post( '/add_moderator', add_moderator );
 router.post( '/remove_moderator', remove_moderator );
 router.post( '/search_blood', search_blood );
+router.post( '/reset_password', reset_password );
+router.post( '/setNewPassword', setNewPassword );
 module.exports = router;

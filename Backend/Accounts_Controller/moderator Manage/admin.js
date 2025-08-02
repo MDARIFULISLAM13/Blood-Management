@@ -1,7 +1,6 @@
 const Users = require( "../../models/usersmodel" );
- // আপনার model এর path ঠিক করবেন
 
-// ✅ সব moderator list
+
 exports.get_moderators = async ( req, res ) =>
 {
     try
@@ -18,7 +17,6 @@ exports.get_moderators = async ( req, res ) =>
     }
 };
 
-// ✅ moderator add (mobile দিয়ে)
 exports.add_moderator = async ( req, res ) =>
 {
     try
@@ -42,7 +40,7 @@ exports.add_moderator = async ( req, res ) =>
     }
 };
 
-// ✅ moderator remove (mobile দিয়ে)
+
 exports.remove_moderator = async ( req, res ) =>
 {
     try

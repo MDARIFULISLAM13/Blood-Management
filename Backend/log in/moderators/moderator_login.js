@@ -26,11 +26,11 @@ exports.moderator_login = async ( req, res ) =>
         {
             const mobile = details;
             const user = await User.findOne( { mobile } );
-            if ( !user ) return res.status( 401 ).json( { message: 'Invalid credentials' } );
-            if ( !user.isVerified ) return res.status( 401 ).json( { message: 'Please verify your email first' } );
-            if ( user.password !== password ) return res.status( 401 ).json( { message: 'Invalid credentials' } );
-            if ( !user.moderator ) return res.status( 401 ).json( { message: 'You are not Moderator' } );
 
+            if ( !user ) return res.status( 401 ).json( { message: 'User Not Found' } );
+            if ( !user.isVerified ) return res.status( 401 ).json( { message: 'Please verify your email first' } );
+            if ( user.password !== password ) return res.status( 401 ).json( { message: 'Invalid username or password.' } );
+            if ( !user.moderator ) return res.status( 401 ).json( { message: 'Access denied: You are not an Moderator' } );
 
 
             const token = jwtGen_moderator( user.email );
@@ -51,10 +51,11 @@ exports.moderator_login = async ( req, res ) =>
         {
             const email = details;
             const user = await User.findOne( { email } );
-            if ( !user ) return res.status( 401 ).json( { message: 'Invalid credentials' } );
+
+            if ( !user ) return res.status( 401 ).json( { message: 'User Not Found' } );
             if ( !user.isVerified ) return res.status( 401 ).json( { message: 'Please verify your email first' } );
-            if ( user.password !== password ) return res.status( 401 ).json( { message: 'Invalid credentials' } );
-            if ( !user.moderator ) return res.status( 401 ).json( { message: 'You are not Moderator' } );
+            if ( user.password !== password ) return res.status( 401 ).json( { message: 'Invalid username or password.' } );
+            if ( !user.moderator ) return res.status( 401 ).json( { message: 'Access denied: You are not an Moderator' } );
             const token = jwtGen_moderator( user.email );
             return res.json( { token } );
 
