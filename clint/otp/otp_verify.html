@@ -12,86 +12,182 @@
         }
 
         body {
-            background: linear-gradient(to right, #667eea, #764ba2);
+            background: linear-gradient(120deg, #667eea, #764ba2 80%);
+            min-height: 100vh;
+            margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
         }
 
         #otpSection {
-            background-color: white;
-            padding: 30px 25px;
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-            max-width: 350px;
-            width: 90%;
+            background: #fff;
+            padding: 32px 24px;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.12);
+            max-width: 370px;
+            width: 95%;
             text-align: center;
+            position: relative;
         }
 
         #otpSection h3 {
-            margin-bottom: 20px;
-            color: #333;
+            margin-bottom: 22px;
+            color: #667eea;
+            font-size: 1.3rem;
+            font-weight: 600;
         }
 
         #otpInput {
-            padding: 12px;
+            padding: 14px;
             width: 100%;
             font-size: 18px;
             border: 1px solid #ccc;
             border-radius: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 22px;
             outline: none;
-            transition: 0.2s ease;
+            transition: border 0.2s;
         }
 
         #otpInput:focus {
             border-color: #667eea;
-            box-shadow: 0 0 5px rgba(102, 126, 234, 0.5);
+            box-shadow: 0 0 6px rgba(102, 126, 234, 0.18);
         }
 
         #verifyOtpBtn {
-            background-color: #667eea;
-            color: white;
-            padding: 12px;
+            background: linear-gradient(90deg, #667eea 60%, #764ba2 100%);
+            color: #fff;
+            padding: 13px;
             width: 100%;
-            font-size: 16px;
+            font-size: 17px;
             font-weight: bold;
             border: none;
             border-radius: 10px;
             cursor: pointer;
-            transition: background 0.3s ease;
+            transition: background 0.2s;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.08);
         }
 
         #verifyOtpBtn:hover {
-            background-color: #5a67d8;
+            background: #5a67d8;
+        }
+
+        /* Notification styles */
+        .notification {
+            position: fixed;
+            top: 22px;
+            left: 50%;
+            transform: translateX(-50%);
+            min-width: 220px;
+            background: #fff;
+            color: #333;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+            padding: 14px 22px;
+            font-size: 1rem;
+            z-index: 9999;
+            display: none;
+            animation: fadeIn 0.4s;
+        }
+
+        .notification.success {
+            border-left: 6px solid #28a745;
+        }
+
+        .notification.error {
+            border-left: 6px solid #c0392b;
+        }
+
+        .notification.info {
+            border-left: 6px solid #667eea;
+        }
+
+        /* Spinner styles */
+        #loading-spinner {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.7);
+            z-index: 9998;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .spinner {
+            border: 7px solid #f3f3f3;
+            border-top: 7px solid #667eea;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         @media screen and (max-width: 480px) {
             #otpSection {
-                padding: 20px;
+                padding: 16px 4px;
+                border-radius: 10px;
             }
 
             #otpInput,
             #verifyOtpBtn {
                 font-size: 16px;
+                padding: 10px;
+            }
+
+            #otpSection h3 {
+                font-size: 1.05rem;
             }
         }
     </style>
 </head>
 
 <body>
-
     <div id="otpSection">
         <h3>Enter OTP sent to your email</h3>
         <input type="text" id="otpInput" placeholder="Enter 6-digit OTP" maxlength="6" />
         <button id="verifyOtpBtn">Verify OTP</button>
     </div>
-
+    <div id="notification" class="notification"></div>
+    <div id="loading-spinner">
+        <div class="spinner"></div>
+    </div>
     <script>
-       const backendURL = "http://localhost:4341/api";
-        const email = localStorage.getItem( "email" );  // এখানে তোমার আগের email key ব্যবহার করো
+        const backendURL = "http://localhost:4341/api";
+        const email = localStorage.getItem( "email" );
+
+        function showNotification( message, type = "info", duration = 2500 )
+        {
+            const notif = document.getElementById( "notification" );
+            notif.textContent = message;
+            notif.className = `notification ${type}`;
+            notif.style.display = "block";
+            setTimeout( () => { notif.style.display = "none"; }, duration );
+        }
 
         document.getElementById( "verifyOtpBtn" ).addEventListener( "click", async () =>
         {
@@ -99,19 +195,21 @@
 
             if ( !otp || otp.length !== 6 )
             {
-                alert( "Please enter a valid 6-digit OTP" );
+                showNotification( "Please enter a valid 6-digit OTP", "error" );
+                return;
+            }
+            if ( !email )
+            {
+                showNotification( "Email not found! Please signup again.", "error" );
                 return;
             }
 
-            if ( !email )
-            {
-                alert( "Email not found! Please signup again." );
-                return;
-            }
+            document.getElementById( "loading-spinner" ).style.display = "flex";
+            await new Promise( resolve => setTimeout( resolve, 10 ) ); // Force browser repaint
 
             try
             {
-                const res = await fetch( `${backendURL}/verify`, {  // তোমার backend এ verify API url `/api/verify`
+                const res = await fetch( `${backendURL}/verify`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify( { email, otp } ),
@@ -121,22 +219,24 @@
 
                 if ( res.ok )
                 {
-                    alert( "Email verified! You can now login." );
-                    localStorage.removeItem( "email" );  // ভেরিফিকেশন শেষে email localStorage থেকে রিমুভ করে দাও
-                    window.location.href = "../log in/members/member.html";  // লগইন পেজ বা হোম পেজে নিয়ে যাও
+                    showNotification( "Email verified! You can now login.", "success" );
+                    localStorage.removeItem( "email" );
+                    setTimeout( () =>
+                    {
+                        window.location.href = "../log in/members/member.html";
+                    }, 1200 );
                 } else
                 {
-                    alert( data.message || "Invalid OTP" );
+                    showNotification( data.message || "Invalid OTP", "error" );
                 }
             } catch ( err )
             {
-                alert( "Error verifying OTP" );
+                showNotification( "Error verifying OTP", "error" );
                 console.error( err );
             }
+            document.getElementById( "loading-spinner" ).style.display = "none";
         } );
-
     </script>
-
 </body>
 
 </html>

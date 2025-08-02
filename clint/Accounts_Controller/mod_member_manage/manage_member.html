@@ -7,13 +7,13 @@
     <title>Member Management</title>
     <style>
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
         }
 
         body {
-            font-family: "Segoe UI", sans-serif;
+            font-family: "Segoe UI", Arial, sans-serif;
             background: linear-gradient(135deg, #74ebd5, #ACB6E5);
             min-height: 100vh;
             display: flex;
@@ -26,16 +26,18 @@
             background: #fff;
             width: 100%;
             max-width: 600px;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            padding: 28px 18px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.13);
             animation: fadeIn 0.5s ease-in-out;
         }
 
         h2 {
             text-align: center;
-            margin-bottom: 20px;
-            color: #333;
+            margin-bottom: 22px;
+            color: #007bff;
+            font-size: 1.5rem;
+            font-weight: 600;
         }
 
         .search-box {
@@ -50,21 +52,29 @@
             border-radius: 8px;
             border: 1px solid #ccc;
             font-size: 15px;
+            background: #f8f8f8;
+            transition: border 0.2s;
+        }
+
+        .search-box input:focus {
+            border-color: #007bff;
+            background: #eafaf1;
         }
 
         .search-box button {
             padding: 12px 18px;
             border: none;
             border-radius: 8px;
-            background: #007bff;
+            background: linear-gradient(90deg, #007bff 60%, #28a745 100%);
             color: white;
             font-size: 15px;
             cursor: pointer;
-            transition: 0.3s;
+            transition: background 0.3s, transform 0.2s;
         }
 
         .search-box button:hover {
             background: #0056b3;
+            transform: scale(1.04);
         }
 
         .result {
@@ -79,6 +89,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
         }
 
         .edit-icon {
@@ -86,6 +97,11 @@
             color: #007bff;
             font-size: 18px;
             margin-left: 8px;
+            transition: color 0.2s;
+        }
+
+        .edit-icon:hover {
+            color: #28a745;
         }
 
         .edit-box {
@@ -99,6 +115,7 @@
             padding: 8px;
             border: 1px solid #ccc;
             border-radius: 6px;
+            font-size: 15px;
         }
 
         .edit-box button {
@@ -106,6 +123,7 @@
             border: none;
             border-radius: 6px;
             cursor: pointer;
+            font-size: 15px;
         }
 
         .save-btn {
@@ -120,19 +138,62 @@
 
         .not-found {
             text-align: center;
-            color: red;
+            color: #e74c3c;
             font-weight: bold;
             margin-top: 15px;
         }
 
-        /* 🔄 Spinner Style */
+        /* Notification styles */
+        .notification {
+            position: fixed;
+            top: 22px;
+            left: 50%;
+            transform: translateX(-50%);
+            min-width: 220px;
+            background: #fff;
+            color: #333;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+            padding: 14px 22px;
+            font-size: 1rem;
+            z-index: 9999;
+            display: none;
+            animation: fadeIn 0.4s;
+        }
+
+        .notification.success {
+            border-left: 6px solid #28a745;
+        }
+
+        .notification.error {
+            border-left: 6px solid #e74c3c;
+        }
+
+        .notification.info {
+            border-left: 6px solid #007bff;
+        }
+
+        /* Spinner Style */
+        #loading-spinner {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.7);
+            z-index: 9998;
+            justify-content: center;
+            align-items: center;
+        }
+
         .spinner {
             margin: 20px auto;
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #007bff;
+            border: 7px solid #f3f3f3;
+            border-top: 7px solid #007bff;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             animation: spin 1s linear infinite;
         }
 
@@ -157,26 +218,51 @@
                 transform: translateY(0);
             }
         }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 12px 4px;
+                border-radius: 10px;
+            }
+
+            h2 {
+                font-size: 1.1rem;
+            }
+
+            .info {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
         <h2>Member Management</h2>
-
         <div class="search-box">
             <input type="text" id="mobileInput" placeholder="Enter Mobile Number (11 digits)">
             <button onclick="searchMember()">Search</button>
         </div>
-
         <div id="resultBox" class="result"></div>
     </div>
-
+    <div id="notification" class="notification"></div>
+    <div id="loading-spinner">
+        <div class="spinner"></div>
+    </div>
     <script>
-        const searchAPI = "http://localhost:4341/api/mod_member_manage"; // backend API
-        const updateAPI = "http://localhost:4341/api/update_last_donate_date"; // backend API
+        const searchAPI = "http://localhost:4341/api/mod_member_manage";
+        const updateAPI = "http://localhost:4341/api/update_last_donate_date";
 
-        // 🔍 Search member
+        function showNotification( message, type = "info", duration = 2500 )
+        {
+            const notif = document.getElementById( "notification" );
+            notif.textContent = message;
+            notif.className = `notification ${type}`;
+            notif.style.display = "block";
+            setTimeout( () => { notif.style.display = "none"; }, duration );
+        }
+
         async function searchMember()
         {
             const mobile = document.getElementById( "mobileInput" ).value.trim();
@@ -184,11 +270,12 @@
 
             if ( !/^[0-9]{11}$/.test( mobile ) )
             {
-                alert( "Please enter a valid 11-digit mobile number." );
+                showNotification( "Please enter a valid 11-digit mobile number.", "error" );
                 return;
             }
 
-            resultBox.innerHTML = `<div class="spinner"></div>`; // show spinner
+            document.getElementById( "loading-spinner" ).style.display = "flex";
+            resultBox.innerHTML = ""; // clear previous
 
             try
             {
@@ -199,6 +286,7 @@
                 } );
 
                 const data = await res.json();
+                document.getElementById( "loading-spinner" ).style.display = "none";
 
                 if ( !data.success )
                 {
@@ -209,42 +297,41 @@
                 }
             } catch ( err )
             {
-                console.error( err );
+                document.getElementById( "loading-spinner" ).style.display = "none";
                 resultBox.innerHTML = `<div class="not-found">Server error!</div>`;
+                showNotification( "Server error!", "error" );
             }
         }
 
-        // 🧑 Show member details
         function showMember( user )
         {
             const resultBox = document.getElementById( "resultBox" );
             let date = user.last_donate_date ? new Date( user.last_donate_date ).toLocaleDateString() : "N/A";
 
             resultBox.innerHTML = `
-        <div class="info"><b>Name:</b> ${user.name}</div>
-        <div class="info"><b>Division:</b> ${user.Division}</div>
-        <div class="info"><b>District:</b> ${user.District}</div>
-        <div class="info"><b>Upazila:</b> ${user.upazila}</div>
-        <div class="info"><b>Mobile:</b> ${user.mobile}</div>
-        <div class="info"><b>Blood Group:</b> ${user.blood_group}</div>
-        <div class="info">
-          <b>Last Donate Date:</b> <span id="donateDate">${date}</span>
-          <span class="edit-icon" onclick="showEditBox('${user.mobile}')">✏️</span>
-        </div>
-        <div id="editBox" class="edit-box" style="display:none;"></div>
-      `;
+                <div class="info"><b>Name:</b> ${user.name}</div>
+                <div class="info"><b>Division:</b> ${user.Division}</div>
+                <div class="info"><b>District:</b> ${user.District}</div>
+                <div class="info"><b>Upazila:</b> ${user.upazila}</div>
+                <div class="info"><b>Mobile:</b> ${user.mobile}</div>
+                <div class="info"><b>Blood Group:</b> ${user.blood_group}</div>
+                <div class="info">
+                    <b>Last Donate Date:</b> <span id="donateDate">${date}</span>
+                    <span class="edit-icon" onclick="showEditBox('${user.mobile}')">✏️</span>
+                </div>
+                <div id="editBox" class="edit-box" style="display:none;"></div>
+            `;
         }
 
-        // ✏️ Show edit date input
         function showEditBox( mobile )
         {
             const editBox = document.getElementById( "editBox" );
             editBox.style.display = "flex";
             editBox.innerHTML = `
-        <input type="date" id="newDate" />
-        <button class="save-btn" onclick="saveDate('${mobile}')">Save</button>
-        <button class="cancel-btn" onclick="cancelEdit()">Cancel</button>
-      `;
+                <input type="date" id="newDate" />
+                <button class="save-btn" onclick="saveDate('${mobile}')">Save</button>
+                <button class="cancel-btn" onclick="cancelEdit()">Cancel</button>
+            `;
         }
 
         function cancelEdit()
@@ -254,18 +341,17 @@
             editBox.innerHTML = "";
         }
 
-        // ✅ Save new donate date
         async function saveDate( mobile )
         {
             const newDate = document.getElementById( "newDate" ).value;
             if ( !newDate )
             {
-                alert( "Please select a date." );
+                showNotification( "Please select a date.", "error" );
                 return;
             }
 
             const editBox = document.getElementById( "editBox" );
-            editBox.innerHTML = `<div class="spinner"></div>`; // show spinner
+            editBox.innerHTML = `<div class="spinner"></div>`;
 
             try
             {
@@ -279,21 +365,19 @@
 
                 if ( data.success )
                 {
-                    // সরাসরি UI আপডেট
                     document.getElementById( "donateDate" ).innerText =
                         new Date( data.data.last_donate_date ).toLocaleDateString();
                     cancelEdit();
-                    alert( data.message );
+                    showNotification( data.message, "success" );
                 } else
                 {
                     editBox.innerHTML = "";
-                    alert( data.message || "Update failed!" );
+                    showNotification( data.message || "Update failed!", "error" );
                 }
             } catch ( err )
             {
-                console.error( err );
                 editBox.innerHTML = "";
-                alert( "Update failed!" );
+                showNotification( "Update failed!", "error" );
             }
         }
     </script>

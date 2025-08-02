@@ -18,22 +18,24 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(to right, #667eea, #764ba2);
+            background: linear-gradient(120deg, #667eea, #764ba2 80%);
         }
 
         .container {
             text-align: center;
             background: #fff;
             padding: 40px 30px;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-            width: 90%;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.12);
+            width: 95%;
             max-width: 400px;
         }
 
         h2 {
             margin-bottom: 25px;
-            color: #333;
+            color: #667eea;
+            font-size: 1.4rem;
+            font-weight: 600;
         }
 
         .btn {
@@ -78,10 +80,94 @@
             background: #c53030;
         }
 
+        /* Notification styles */
+        .notification {
+            position: fixed;
+            top: 22px;
+            left: 50%;
+            transform: translateX(-50%);
+            min-width: 220px;
+            background: #fff;
+            color: #333;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+            padding: 14px 22px;
+            font-size: 1rem;
+            z-index: 9999;
+            display: none;
+            animation: fadeIn 0.4s;
+        }
+
+        .notification.success {
+            border-left: 6px solid #28a745;
+        }
+
+        .notification.error {
+            border-left: 6px solid #c0392b;
+        }
+
+        .notification.info {
+            border-left: 6px solid #667eea;
+        }
+
+        /* Spinner styles */
+        #loading-spinner {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.7);
+            z-index: 9998;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .spinner {
+            border: 7px solid #f3f3f3;
+            border-top: 7px solid #667eea;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         @media(max-width: 480px) {
+            .container {
+                padding: 16px 4px;
+                border-radius: 10px;
+            }
+
             .btn {
                 font-size: 14px;
                 padding: 12px;
+            }
+
+            h2 {
+                font-size: 1.1rem;
             }
         }
     </style>
@@ -90,12 +176,35 @@
 <body>
     <div class="container">
         <h2>Select Login Type</h2>
-        <button class="btn member" onclick="location.href='members/member.html'">Members Login</button>
-        <button class="btn moderator" onclick="location.href='moderators/moderator.html'">Moderator Login</button>
-        <button class="btn admin" onclick="location.href='admin/admin.html'">Admin Login</button>
-        <button class="btn admin" onclick="location.href='../password/Reset password/pass.html'">Reset Password</button>
-
+        <button class="btn member" onclick="goLogin('members/member.html')">Members Login</button>
+        <button class="btn moderator" onclick="goLogin('moderators/moderator.html')">Moderator Login</button>
+        <button class="btn admin" onclick="goLogin('admin/admin.html')">Admin Login</button>
+        <button class="btn admin" onclick="goLogin('../password/Reset password/pass.html')">Reset Password</button>
     </div>
+    <div id="notification" class="notification"></div>
+    <div id="loading-spinner">
+        <div class="spinner"></div>
+    </div>
+    <script>
+        function showNotification( message, type = "info", duration = 2500 )
+        {
+            const notif = document.getElementById( "notification" );
+            notif.textContent = message;
+            notif.className = `notification ${type}`;
+            notif.style.display = "block";
+            setTimeout( () => { notif.style.display = "none"; }, duration );
+        }
+        // Example: Simulate loading for login (replace with real backend logic if needed)
+        function goLogin( url )
+        {
+            document.getElementById( "loading-spinner" ).style.display = "flex";
+            showNotification( "Redirecting...", "info" );
+            setTimeout( () =>
+            {
+                window.location.href = url;
+            }, 800 ); // Simulate loading, remove if not needed
+        }
+    </script>
 </body>
 
 </html>

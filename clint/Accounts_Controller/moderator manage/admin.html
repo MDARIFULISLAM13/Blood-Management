@@ -13,91 +13,102 @@
         }
 
         body {
-            font-family: Arial, sans-serif;
-            background: #f4f6f8;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(120deg, #f4f6f8 60%, #d1e7dd 100%);
             color: #333;
+            min-height: 100vh;
             padding: 20px;
-        }
-
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #2c3e50;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
         }
 
         .container {
             max-width: 1000px;
+            width: 100%;
             margin: auto;
             display: grid;
-            gap: 20px;
+            gap: 24px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 18px;
+            color: #2c3e50;
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 1px;
         }
 
         .box {
             background: #fff;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s ease;
+            padding: 26px 20px;
+            border-radius: 16px;
+            box-shadow: 0 6px 24px rgba(44, 62, 80, 0.10);
+            transition: transform 0.2s;
         }
 
         .box:hover {
-            transform: translateY(-3px);
+            transform: translateY(-3px) scale(1.01);
         }
 
         h2 {
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             color: #34495e;
+            font-size: 1.2rem;
+            font-weight: 600;
         }
 
         input {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             margin: 8px 0;
             border: 1px solid #ddd;
-            border-radius: 6px;
+            border-radius: 8px;
+            font-size: 15px;
+            background: #f8f8f8;
+            transition: border 0.2s;
+        }
+
+        input:focus {
+            border-color: #3498db;
+            background: #eafaf1;
+            outline: none;
         }
 
         button {
-            padding: 10px 15px;
+            padding: 12px 18px;
             border: none;
-            border-radius: 6px;
-            background: #3498db;
+            border-radius: 8px;
+            background: linear-gradient(90deg, #3498db 60%, #27ae60 100%);
             color: #fff;
+            font-size: 16px;
+            font-weight: bold;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: background 0.3s, transform 0.2s;
+            margin-top: 4px;
         }
 
         button:hover {
             background: #2980b9;
-        }
-
-        .message {
-            margin-top: 8px;
-            font-size: 14px;
-        }
-
-        .error {
-            color: #e74c3c;
-        }
-
-        .success {
-            color: #27ae60;
+            transform: scale(1.04);
         }
 
         /* Moderator List */
         .moderator-list {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 15px;
+            gap: 18px;
             margin-top: 15px;
         }
 
         .card {
             background: #fafafa;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s ease;
+            padding: 18px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: transform 0.2s;
+            text-align: left;
         }
 
         .card:hover {
@@ -106,61 +117,152 @@
 
         .card b {
             color: #2c3e50;
+            font-size: 1.08em;
+        }
+
+        /* Notification styles */
+        .notification {
+            position: fixed;
+            top: 22px;
+            left: 50%;
+            transform: translateX(-50%);
+            min-width: 220px;
+            background: #fff;
+            color: #333;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+            padding: 14px 22px;
+            font-size: 1rem;
+            z-index: 9999;
+            display: none;
+            animation: fadeIn 0.4s;
+        }
+
+        .notification.success {
+            border-left: 6px solid #27ae60;
+        }
+
+        .notification.error {
+            border-left: 6px solid #e74c3c;
+        }
+
+        .notification.info {
+            border-left: 6px solid #3498db;
+        }
+
+        /* Spinner styles */
+        #loading-spinner {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.7);
+            z-index: 9998;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .spinner {
+            border: 7px solid #f3f3f3;
+            border-top: 7px solid #27ae60;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         @media (max-width: 600px) {
             h1 {
-                font-size: 24px;
+                font-size: 1.2rem;
+            }
+
+            .container {
+                gap: 12px;
             }
 
             .box {
-                padding: 15px;
+                padding: 12px;
+                border-radius: 10px;
             }
 
             button {
                 width: 100%;
                 margin-top: 10px;
             }
+
+            .moderator-list {
+                gap: 10px;
+            }
         }
     </style>
 </head>
 
 <body>
-
     <h1>Moderator Management</h1>
     <div class="container">
-
         <!-- Add Moderator -->
         <div class="box">
             <h2>Add Moderator</h2>
             <input type="text" id="addMobile" placeholder="Enter Mobile Number">
             <button onclick="addModerator()">Add</button>
-            <p id="addMessage" class="message"></p>
         </div>
-
         <!-- Remove Moderator -->
         <div class="box">
             <h2>Remove Moderator</h2>
             <input type="text" id="removeMobile" placeholder="Enter Mobile Number">
             <button onclick="removeModerator()">Remove</button>
-            <p id="removeMessage" class="message"></p>
         </div>
-
         <!-- All Moderators -->
         <div class="box">
             <h2>All Moderators</h2>
             <div id="moderatorList" class="moderator-list"></div>
         </div>
     </div>
-
+    <div id="notification" class="notification"></div>
+    <div id="loading-spinner">
+        <div class="spinner"></div>
+    </div>
     <script>
         const API = "http://localhost:4341/api";
-
+        // Notification function
+        function showNotification( message, type = "info", duration = 2500 )
+        {
+            const notif = document.getElementById( "notification" );
+            notif.textContent = message;
+            notif.className = `notification ${type}`;
+            notif.style.display = "block";
+            setTimeout( () => { notif.style.display = "none"; }, duration );
+        }
         // Auto load moderators
         window.onload = loadModerators;
-
         async function loadModerators()
         {
+            document.getElementById( "loading-spinner" ).style.display = "flex";
+            await new Promise( resolve => setTimeout( resolve, 10 ) );
             try
             {
                 const res = await fetch( `${API}/get_moderators`, {
@@ -168,84 +270,99 @@
                     headers: { "Content-Type": "application/json" }
                 } );
                 const data = await res.json();
-
                 const list = document.getElementById( 'moderatorList' );
                 list.innerHTML = "";
-
                 if ( !Array.isArray( data ) || data.length === 0 )
                 {
                     list.innerHTML = "<p>No moderators found</p>";
+                    document.getElementById( "loading-spinner" ).style.display = "none";
                     return;
                 }
-
                 data.forEach( m =>
                 {
                     const address = `${m.Division}, ${m.District}, ${m.upazila}`;
                     const donateDate = m.last_donate_date ? new Date( m.last_donate_date ).toLocaleDateString() : "N/A";
                     const card = `
-          <div class="card">
-            <p><b>${m.name}</b></p>
-            <p>📱 ${m.mobile}</p>
-            <p>📍 ${address}</p>
-            <p>🩸 Last Donate: ${donateDate}</p>
-          </div>
-        `;
+                        <div class="card">
+                            <p><b>${m.name}</b></p>
+                            <p>📱 ${m.mobile}</p>
+                            <p>📍 ${address}</p>
+                            <p>🩸 Last Donate: ${donateDate}</p>
+                        </div>
+                    `;
                     list.innerHTML += card;
                 } );
-
             } catch ( err )
             {
-                document.getElementById( 'moderatorList' ).innerHTML = "<p class='error'>Error loading moderators</p>";
+                showNotification( "Error loading moderators", "error" );
             }
+            document.getElementById( "loading-spinner" ).style.display = "none";
         }
-
         async function addModerator()
         {
             const mobile = document.getElementById( "addMobile" ).value.trim();
             if ( !mobile )
             {
-                document.getElementById( "addMessage" ).innerHTML = "<span class='error'>Please enter a mobile number</span>";
+                showNotification( "Please enter a mobile number", "error" );
                 return;
             }
-
-            const res = await fetch( `${API}/add_moderator`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify( { mobile } )
-            } );
-            const data = await res.json();
-
-            document.getElementById( "addMessage" ).innerHTML = data.message.includes( "successfully" )
-                ? `<span class='success'>${data.message}</span>`
-                : `<span class='error'>${data.message}</span>`;
-
-            loadModerators();
+            document.getElementById( "loading-spinner" ).style.display = "flex";
+            await new Promise( resolve => setTimeout( resolve, 10 ) );
+            try
+            {
+                const res = await fetch( `${API}/add_moderator`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify( { mobile } )
+                } );
+                const data = await res.json();
+                if ( data.message && data.message.includes( "successfully" ) )
+                {
+                    showNotification( data.message, "success" );
+                } else
+                {
+                    showNotification( data.message || "Failed to add moderator", "error" );
+                }
+                loadModerators();
+            } catch ( err )
+            {
+                showNotification( "Failed to add moderator", "error" );
+            }
+            document.getElementById( "loading-spinner" ).style.display = "none";
         }
-
         async function removeModerator()
         {
             const mobile = document.getElementById( "removeMobile" ).value.trim();
             if ( !mobile )
             {
-                document.getElementById( "removeMessage" ).innerHTML = "<span class='error'>Please enter a mobile number</span>";
+                showNotification( "Please enter a mobile number", "error" );
                 return;
             }
-
-            const res = await fetch( `${API}/remove_moderator`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify( { mobile } )
-            } );
-            const data = await res.json();
-
-            document.getElementById( "removeMessage" ).innerHTML = data.message.includes( "successfully" )
-                ? `<span class='success'>${data.message}</span>`
-                : `<span class='error'>${data.message}</span>`;
-
-            loadModerators();
+            document.getElementById( "loading-spinner" ).style.display = "flex";
+            await new Promise( resolve => setTimeout( resolve, 10 ) );
+            try
+            {
+                const res = await fetch( `${API}/remove_moderator`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify( { mobile } )
+                } );
+                const data = await res.json();
+                if ( data.message && data.message.includes( "successfully" ) )
+                {
+                    showNotification( data.message, "success" );
+                } else
+                {
+                    showNotification( data.message || "Failed to remove moderator", "error" );
+                }
+                loadModerators();
+            } catch ( err )
+            {
+                showNotification( "Failed to remove moderator", "error" );
+            }
+            document.getElementById( "loading-spinner" ).style.display = "none";
         }
     </script>
-
 </body>
 
 </html>

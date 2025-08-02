@@ -3,18 +3,18 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Member Account</title>
+    <title>Moderator Account</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            background: linear-gradient(135deg, #43cea2, #185a9d);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -24,18 +24,21 @@
 
         .account-box {
             background: #fff;
-            padding: 25px;
-            border-radius: 15px;
+            padding: 32px 22px;
+            border-radius: 18px;
             width: 100%;
-            max-width: 450px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            max-width: 480px;
+            box-shadow: 0 10px 32px rgba(44, 62, 80, 0.13);
             animation: fadeIn 0.6s ease-in-out;
+            position: relative;
         }
 
         .account-box h2 {
             margin-bottom: 20px;
             text-align: center;
-            color: #333;
+            color: #185a9d;
+            font-size: 1.5rem;
+            font-weight: 600;
         }
 
         .info {
@@ -45,6 +48,14 @@
             border-radius: 8px;
             background: #f8f9fa;
             transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info b {
+            min-width: 140px;
+            color: #185a9d;
         }
 
         .info:hover {
@@ -52,64 +63,22 @@
             transform: translateX(3px);
         }
 
-        .logout-btn {
-            margin-top: 25px;
+        button {
+            margin-top: 18px;
             width: 100%;
-            padding: 12px;
+            padding: 13px;
             font-size: 16px;
             font-weight: bold;
-            background: #ff4b5c;
-            color: white;
             border: none;
             border-radius: 8px;
             cursor: pointer;
             transition: 0.3s;
+            box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
         }
 
         .update_moderator_details {
-            margin-top: 25px;
-            width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            font-weight: bold;
-            background: #6310cf;
+            background: linear-gradient(90deg, #6310cf 60%, #43cea2 100%);
             color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .change_password {
-            margin-top: 25px;
-            width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            font-weight: bold;
-            background: #0c8a8a;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .moderator_member_manage {
-            margin-top: 25px;
-            width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            font-weight: bold;
-            background: #058ddb;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .logout-btn:hover {
-            background: #4d08bd;
-            transform: scale(1.05);
         }
 
         .update_moderator_details:hover {
@@ -117,13 +86,97 @@
             transform: scale(1.05);
         }
 
+        .change_password {
+            background: linear-gradient(90deg, #0c8a8a 60%, #185a9d 100%);
+            color: white;
+        }
+
         .change_password:hover {
             background: #e00202;
             transform: scale(1.05);
         }
-         .moderator_member_manage:hover {
+
+        .moderator_member_manage {
+            background: linear-gradient(90deg, #058ddb 60%, #43cea2 100%);
+            color: white;
+        }
+
+        .moderator_member_manage:hover {
             background: #b1042f;
             transform: scale(1.05);
+        }
+
+        .logout-btn {
+            background: #ff4b5c;
+            color: white;
+        }
+
+        .logout-btn:hover {
+            background: #4d08bd;
+            transform: scale(1.05);
+        }
+
+        /* Notification styles */
+        .notification {
+            position: fixed;
+            top: 22px;
+            left: 50%;
+            transform: translateX(-50%);
+            min-width: 220px;
+            background: #fff;
+            color: #333;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+            padding: 14px 22px;
+            font-size: 1rem;
+            z-index: 9999;
+            display: none;
+            animation: fadeIn 0.4s;
+        }
+
+        .notification.success {
+            border-left: 6px solid #28a745;
+        }
+
+        .notification.error {
+            border-left: 6px solid #e74c3c;
+        }
+
+        .notification.info {
+            border-left: 6px solid #185a9d;
+        }
+
+        /* Spinner styles */
+        #loading-spinner {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.7);
+            z-index: 9998;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .spinner {
+            border: 7px solid #f3f3f3;
+            border-top: 7px solid #43cea2;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         @keyframes fadeIn {
@@ -138,29 +191,25 @@
             }
         }
 
-        /* Responsive */
         @media (max-width: 500px) {
             .account-box {
-                padding: 20px;
+                padding: 14px 4px;
+                border-radius: 10px;
             }
 
             .info {
                 font-size: 14px;
+                flex-direction: column;
+                align-items: flex-start;
             }
 
-            .logout-btn {
+            button {
                 font-size: 14px;
+                padding: 10px;
             }
 
-            .update_moderator_details {
-                font-size: 14px;
-            }
-
-            .change_password {
-                font-size: 14px;
-            }
-             .moderator_member_manage {
-                font-size: 14px;
+            .account-box h2 {
+                font-size: 1.1rem;
             }
         }
     </style>
@@ -176,66 +225,78 @@
             onclick="window.location.href='../../../password/Change Password/moderators/Change_password.html'">Change
             Password</button>
         <button class="moderator_member_manage"
-            onclick="window.location.href='../../mod_member_manage/manage_member.html'">Manage
-            Members</button>
+            onclick="window.location.href='../../mod_member_manage/manage_member.html'">Manage Members</button>
         <button class="logout-btn" onclick="logout()">Logout</button>
-
     </div>
-
+    <div id="notification" class="notification"></div>
+    <div id="loading-spinner">
+        <div class="spinner"></div>
+    </div>
     <script>
-
         const loginPage = "../../../log in/login.html";
         const token = localStorage.getItem( "token_mod" );
         const moderator_url = "http://localhost:4341/api/moderator_details";
 
-        if ( !token )
+        function showNotification( message, type = "info", duration = 2500 )
         {
-            alert( "Token not found!" );
-            window.location.href = loginPage;
-        } else
+            const notif = document.getElementById( "notification" );
+            notif.textContent = message;
+            notif.className = `notification ${type}`;
+            notif.style.display = "block";
+            setTimeout( () => { notif.style.display = "none"; }, duration );
+        }
+
+        async function fetchModerator()
         {
-            fetch( moderator_url, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify( { token } )
-            } )
-                .then( res => res.json() )
-                .then( data =>
-                {
-                    if ( !data.success )
-                    {
-                        alert( data.message || "Invalid token!" );
-                        localStorage.removeItem( "token_mod" );
-                        window.location.href = loginPage;
-                    } else
-                    {
-                        showMember( data.data );
-                    }
-                } )
-                .catch( err =>
-                {
-                    console.error( err );
-                    alert( "Server error!" );
-                    localStorage.removeItem( "token_mod" );
-                    window.location.href = loginPage;
+            if ( !token )
+            {
+                showNotification( "Token not found!", "error" );
+                setTimeout( () => { window.location.href = loginPage; }, 1200 );
+                return;
+            }
+            document.getElementById( "loading-spinner" ).style.display = "flex";
+            await new Promise( resolve => setTimeout( resolve, 10 ) );
+            try
+            {
+                const res = await fetch( moderator_url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify( { token } )
                 } );
+                const data = await res.json();
+                document.getElementById( "loading-spinner" ).style.display = "none";
+                if ( !data.success )
+                {
+                    showNotification( data.message || "Invalid token!", "error" );
+                    localStorage.removeItem( "token_mod" );
+                    setTimeout( () => { window.location.href = loginPage; }, 1200 );
+                } else
+                {
+                    showMember( data.data );
+                }
+            } catch ( err )
+            {
+                document.getElementById( "loading-spinner" ).style.display = "none";
+                showNotification( "Server error!", "error" );
+                localStorage.removeItem( "token_mod" );
+                setTimeout( () => { window.location.href = loginPage; }, 1200 );
+            }
         }
 
         function showMember( user )
         {
             const infoDiv = document.getElementById( "moderator_info" );
             let date = user.last_donate_date ? new Date( user.last_donate_date ).toLocaleDateString() : "N/A";
-
             infoDiv.innerHTML = `
-        <div class="info"><b>👤 Name:</b> ${user.name}</div>
-        <div class="info"><b>📍 Division:</b> ${user.Division}</div>
-        <div class="info"><b>🏙 District:</b> ${user.District}</div>
-        <div class="info"><b>📌 Upazila:</b> ${user.upazila}</div>
-        <div class="info"><b>📞 Mobile:</b> ${user.mobile}</div>
-        <div class="info"><b>✉️ Email:</b> ${user.email}</div>
-        <div class="info"><b>🩸 Blood Group:</b> ${user.blood_group}</div>
-        <div class="info"><b>📅 Last Donate Date:</b> ${date}</div>
-      `;
+                <div class="info"><b>👤 Name:</b> ${user.name}</div>
+                <div class="info"><b>📍 Division:</b> ${user.Division}</div>
+                <div class="info"><b>🏙 District:</b> ${user.District}</div>
+                <div class="info"><b>📌 Upazila:</b> ${user.upazila}</div>
+                <div class="info"><b>📞 Mobile:</b> ${user.mobile}</div>
+                <div class="info"><b>✉️ Email:</b> ${user.email}</div>
+                <div class="info"><b>🩸 Blood Group:</b> ${user.blood_group}</div>
+                <div class="info"><b>📅 Last Donate Date:</b> ${date}</div>
+            `;
         }
 
         function logout()
@@ -243,6 +304,8 @@
             localStorage.removeItem( "token_mod" );
             window.location.href = loginPage;
         }
+
+        document.addEventListener( "DOMContentLoaded", fetchModerator );
     </script>
 </body>
 

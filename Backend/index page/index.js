@@ -1,5 +1,7 @@
 const Users = require( "../models/usersmodel" );
 
+
+
 exports.search_blood = async ( req, res ) =>
 {
     try
@@ -19,29 +21,27 @@ exports.search_blood = async ( req, res ) =>
             return res.json( [] );
         }
 
-        const prioritized = donors.map( d =>
-        {
-            let priority = "Other Region";
+        const prioritized = [];
 
-            if ( d.Division === Division )
-            {
-                if ( d.District === District )
-                {
-                    if ( d.upazila === upazila )
-                    {
-                        priority = "Same Upazila";
-                    } else
-                    {
-                        priority = "Same District";
-                    }
-                } else
-                {
-                    priority = "Same Division";
-                }
-            }
+        // 1. same upazila
+        donors
+            .filter( d => d.Division === Division && d.District === District && d.upazila === upazila )
+            .forEach( d => prioritized.push( { ...d._doc, priority: "Same Upazila" } ) );
 
-            return { ...d._doc, priority };
-        } );
+        // 2. same district
+        donors
+            .filter( d => d.Division === Division && d.District === District && d.upazila !== upazila )
+            .forEach( d => prioritized.push( { ...d._doc, priority: "Same District" } ) );
+
+        // 3. same division
+        donors
+            .filter( d => d.Division === Division && d.District !== District )
+            .forEach( d => prioritized.push( { ...d._doc, priority: "Same Division" } ) );
+
+        // 4. others
+        donors
+            .filter( d => d.Division !== Division )
+            .forEach( d => prioritized.push( { ...d._doc, priority: "Other Region" } ) );
 
         res.json( prioritized );
     } catch ( err )

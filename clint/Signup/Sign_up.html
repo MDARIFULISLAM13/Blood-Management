@@ -6,116 +6,206 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Signup Form</title>
     <style>
+        :root {
+            --primary: #28a745;
+            --accent: #c0392b;
+            --bg: #f7fafd;
+            --card-bg: #fff;
+            --shadow: 0 6px 24px rgba(44, 62, 80, 0.08);
+        }
+
         * {
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
-}
+            box-sizing: border-box;
+            padding: 0;
+            margin: 0;
+        }
 
-body {
-    font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(120deg, #e0f7fa, #fff);
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-}
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(120deg, #e0f7fa, #fff);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
 
-.signup-container {
-    width: 100%;
-    max-width: 500px;
-    background: white;
-    padding: 25px 30px;
-    border-radius: 10px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-}
+        .signup-container {
+            width: 100%;
+            max-width: 420px;
+            background: var(--card-bg);
+            padding: 32px 22px;
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
 
-.signup-container h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #333;
-}
+        .signup-container h2 {
+            text-align: center;
+            margin-bottom: 18px;
+            color: var(--primary);
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+        }
 
-form input,
-form select {
-    width: 100%;
-    padding: 12px 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 15px;
-}
+        form label {
+            font-size: 15px;
+            color: #444;
+            margin-top: 10px;
+            display: block;
+            margin-bottom: 3px;
+        }
 
-form input:focus,
-form select:focus {
-    border-color: #28a745;
-    outline: none;
-}
+        form input,
+        form select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 12px;
+            border: 1px solid #d0d0d0;
+            border-radius: 8px;
+            font-size: 15px;
+            background: #f8f8f8;
+            transition: border 0.2s;
+        }
 
-form label {
-    font-size: 14px;
-    color: #555;
-    margin-top: 10px;
-    display: block;
-}
+        form input:focus,
+        form select:focus {
+            border-color: var(--primary);
+            outline: none;
+            background: #eafaf1;
+        }
 
-button {
-    width: 100%;
-    padding: 14px;
-    background-color: #28a745;
-    color: white;
-    font-size: 16px;
-    margin-top: 15px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-}
+        button[type="submit"] {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: #fff;
+            font-size: 17px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(40, 167, 69, 0.08);
+            transition: background 0.2s;
+        }
 
-button:hover {
-    background-color: #218838;
-}
+        button[type="submit"]:hover {
+            background: #218838;
+        }
 
-/* Responsive Design */
-@media (max-width: 480px) {
-    .signup-container {
-        padding: 20px;
-    }
+        /* Notification styles */
+        .notification {
+            position: fixed;
+            top: 22px;
+            left: 50%;
+            transform: translateX(-50%);
+            min-width: 220px;
+            background: #fff;
+            color: #333;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+            padding: 14px 22px;
+            font-size: 1rem;
+            z-index: 9999;
+            display: none;
+            animation: fadeIn 0.4s;
+        }
 
-    form input,
-    form select,
-    button {
-        font-size: 14px;
-        padding: 10px;
-    }
-}
+        .notification.success {
+            border-left: 6px solid var(--primary);
+        }
+
+        .notification.error {
+            border-left: 6px solid var(--accent);
+        }
+
+        .notification.info {
+            border-left: 6px solid #2980b9;
+        }
+
+        /* Spinner styles */
+        #loading-spinner {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.7);
+            z-index: 9998;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .spinner {
+            border: 7px solid #f3f3f3;
+            border-top: 7px solid var(--primary);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .signup-container {
+                padding: 14px 4px;
+                border-radius: 10px;
+            }
+
+            form input,
+            form select,
+            button[type="submit"] {
+                font-size: 14px;
+                padding: 10px;
+            }
+
+            .signup-container h2 {
+                font-size: 1.1rem;
+            }
+        }
     </style>
-
-
 </head>
 
 <body>
-
     <div class="signup-container">
         <form id="signupForm">
             <h2>Sign Up</h2>
-
             <label for="name">Full Name</label>
             <input type="text" id="name" name="name" required />
-
 
             <label for="divisionSelect">Division</label>
             <select id="divisionSelect" name="Division" required>
                 <option value="">-- Select a Division --</option>
             </select>
 
-
             <label for="districtSelect">District</label>
             <select id="districtSelect" name="District" disabled required>
                 <option value="">-- Select a District --</option>
             </select>
-
 
             <label for="upazilaSelect">Upazila</label>
             <select id="upazilaSelect" name="upazila" disabled required>
@@ -153,216 +243,202 @@ button:hover {
             <button type="submit">Sign Up</button>
         </form>
     </div>
-
-
+    <!-- Notification -->
+    <div id="notification" class="notification"></div>
+    <!-- Loading Spinner -->
+    <div id="loading-spinner">
+        <div class="spinner"></div>
+    </div>
     <script>
-
-        // Form validation
-            const form = document.getElementById( "signupForm" );
-
-            form.addEventListener( "submit", async function ( e )
+        // Notification function
+        function showNotification( message, type = "info", duration = 2500 )
+        {
+            const notif = document.getElementById( "notification" );
+            notif.textContent = message;
+            notif.className = `notification ${type}`;
+            notif.style.display = "block";
+            setTimeout( () => { notif.style.display = "none"; }, duration );
+        }
+        // Form validation and submit
+        const form = document.getElementById( "signupForm" );
+        form.addEventListener( "submit", async function ( e )
+        {
+            e.preventDefault();
+            const mobile = form.mobile.value.trim();
+            const email = form.email.value.trim();
+            const password = form.password.value;
+            const retypePassword = form.retype_password.value;
+            const isMobileValid = /^[0-9]{11}$/.test( mobile );
+            const isEmailValid = email.endsWith( "@gmail.com" );
+            if ( !isMobileValid )
             {
-                e.preventDefault();
-
-                const mobile = form.mobile.value.trim();
-                const email = form.email.value.trim();
-                const password = form.password.value;
-                const retypePassword = form.retype_password.value;
-
-                const isMobileValid = /^[0-9]{11}$/.test( mobile );
-                const isEmailValid = email.endsWith( "@gmail.com" );
-
-                if ( !isMobileValid )
-                {
-                    alert( "Mobile number must be exactly 11 digits." );
-                    return;
-                }
-
-                // if ( !isEmailValid )
-                // {
-                //     alert( "Email must end with @gmail.com" );
-                //     return;
-                // }
-
-                if ( password !== retypePassword )
-                {
-                    alert( "Passwords do not match." );
-                    return;
-                }
-
-                const data = {};
-                new FormData( form ).forEach( ( value, key ) => data[key] = value );
-
-                try
-                {
-                    const response = await fetch( "http://localhost:4341/api/signup", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify( data )
-                    } );
-
-                    const result = await response.json();
-
-                    if ( response.ok )
-                    {
-
-                        localStorage.setItem( "email", result.email );
-                        window.location.href = "../otp/otp_verify.html";
-
-                    } else
-                    {
-                        alert( result.message || "Something went wrong!" );
-                    }
-
-                } catch ( error )
-                {
-                    console.error( "Signup failed:", error );
-                    alert( "Signup failed. Try again later." );
-                }
-
-            } );
-
-            // ========================
-            // বিভাগ, জেলা, উপজেলা লজিক
-            // ========================
-            let divisions = [];
-
-            const divisionSelect = document.getElementById( 'divisionSelect' );
-            const districtSelect = document.getElementById( 'districtSelect' );
-            const upazilaSelect = document.getElementById( 'upazilaSelect' );
-
-            function loadData()
-            {
-                fetch( 'http://localhost:4341/api/location_data' )
-                    .then( res =>
-                    {
-                        if ( !res.ok ) throw new Error( 'Failed to load data' );
-                        return res.json();
-                    } )
-                    .then( jsonData =>
-                    {
-                        divisions = jsonData;
-                        populateDivisions();
-                    } )
-                    .catch( err =>
-                    {
-                        console.error( err );
-                        alert( 'Failed to load data' );
-                    } );
+                showNotification( "Mobile number must be exactly 11 digits.", "error" );
+                return;
             }
-
-            function populateDivisions()
+            if ( !isEmailValid )
             {
-                clearSelect( divisionSelect );
-                addOption( divisionSelect, '', '-- Select a Division --' );
-                divisions.forEach( div =>
-                {
-                    addOption( divisionSelect, div.name, div.name );
+                showNotification( "Email must end with @gmail.com", "error" );
+                return;
+            }
+            if ( password !== retypePassword )
+            {
+                showNotification( "Passwords do not match.", "error" );
+                return;
+            }
+            const data = {};
+            new FormData( form ).forEach( ( value, key ) => data[key] = value );
+            document.getElementById( "loading-spinner" ).style.display = "flex";
+            await new Promise( resolve => setTimeout( resolve, 10 ) ); // Force browser repaint
+            try
+            {
+                const response = await fetch( "http://localhost:4341/api/signup", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify( data )
                 } );
+                const result = await response.json();
+                if ( response.ok )
+                {
+                    showNotification( "Signup successful! Redirecting...", "success" );
+                    localStorage.setItem( "email", result.email );
+                    setTimeout( () =>
+                    {
+                        window.location.href = "../otp/otp_verify.html";
+                    }, 1200 );
+                } else
+                {
+                    showNotification( result.message || "Something went wrong!", "error" );
+                }
+            } catch ( error )
+            {
+                console.error( "Signup failed:", error );
+                showNotification( "Signup failed. Try again later.", "error" );
+            }
+            document.getElementById( "loading-spinner" ).style.display = "none";
+        } );
+        // ========================
+        // Division, District, Upazila logic
+        // ========================
+        let divisions = [];
+        const divisionSelect = document.getElementById( 'divisionSelect' );
+        const districtSelect = document.getElementById( 'districtSelect' );
+        const upazilaSelect = document.getElementById( 'upazilaSelect' );
+        function loadData()
+        {
+            fetch( 'http://localhost:4341/api/location_data' )
+                .then( res =>
+                {
+                    if ( !res.ok ) throw new Error( 'Failed to load data' );
+                    return res.json();
+                } )
+                .then( jsonData =>
+                {
+                    divisions = jsonData;
+                    populateDivisions();
+                } )
+                .catch( err =>
+                {
+                    console.error( err );
+                    showNotification( 'Failed to load location data', "error" );
+                } );
+        }
+        function populateDivisions()
+        {
+            clearSelect( divisionSelect );
+            addOption( divisionSelect, '', '-- Select a Division --' );
+            divisions.forEach( div =>
+            {
+                addOption( divisionSelect, div.name, div.name );
+            } );
+            districtSelect.disabled = true;
+            upazilaSelect.disabled = true;
+            clearSelect( districtSelect );
+            clearSelect( upazilaSelect );
+        }
+        function populateDistricts( divisionName )
+        {
+            clearSelect( districtSelect );
+            addOption( districtSelect, '', '-- Select a District --' );
+            const division = divisions.find( d => d.name === divisionName );
+            if ( division )
+            {
+                division.districts.forEach( dist =>
+                {
+                    addOption( districtSelect, dist.name, dist.name );
+                } );
+                districtSelect.disabled = false;
+            } else
+            {
+                districtSelect.disabled = true;
+            }
+            clearSelect( upazilaSelect );
+            addOption( upazilaSelect, '', '-- Select an Upazila --' );
+            upazilaSelect.disabled = true;
+        }
+        function populateUpazilas( divisionName, districtName )
+        {
+            clearSelect( upazilaSelect );
+            addOption( upazilaSelect, '', '-- Select an Upazila --' );
+            const division = divisions.find( d => d.name === divisionName );
+            if ( division )
+            {
+                const district = division.districts.find( dist => dist.name === districtName );
+                if ( district )
+                {
+                    district.upazilas.forEach( upz =>
+                    {
+                        addOption( upazilaSelect, upz, upz );
+                    } );
+                    upazilaSelect.disabled = false;
+                } else
+                {
+                    upazilaSelect.disabled = true;
+                }
+            }
+        }
+        function clearSelect( selectElem )
+        {
+            while ( selectElem.options.length > 0 )
+            {
+                selectElem.remove( 0 );
+            }
+        }
+        function addOption( selectElem, value, text )
+        {
+            const option = document.createElement( 'option' );
+            option.value = value;
+            option.text = text;
+            selectElem.appendChild( option );
+        }
+        divisionSelect.addEventListener( 'change', e =>
+        {
+            const selectedDivision = e.target.value;
+            if ( selectedDivision )
+            {
+                populateDistricts( selectedDivision );
+            } else
+            {
                 districtSelect.disabled = true;
                 upazilaSelect.disabled = true;
                 clearSelect( districtSelect );
                 clearSelect( upazilaSelect );
             }
-
-            function populateDistricts( divisionName )
+        } );
+        districtSelect.addEventListener( 'change', e =>
+        {
+            const selectedDistrict = e.target.value;
+            const selectedDivision = divisionSelect.value;
+            if ( selectedDistrict )
             {
-                clearSelect( districtSelect );
-                addOption( districtSelect, '', '-- Select a District --' );
-                const division = divisions.find( d => d.name === divisionName );
-                if ( division )
-                {
-                    division.districts.forEach( dist =>
-                    {
-                        addOption( districtSelect, dist.name, dist.name );
-                    } );
-                    districtSelect.disabled = false;
-                } else
-                {
-                    districtSelect.disabled = true;
-                }
-                clearSelect( upazilaSelect );
-                addOption( upazilaSelect, '', '-- Select an Upazila --' );
+                populateUpazilas( selectedDivision, selectedDistrict );
+            } else
+            {
                 upazilaSelect.disabled = true;
-            }
-
-            function populateUpazilas( divisionName, districtName )
-            {
                 clearSelect( upazilaSelect );
-                addOption( upazilaSelect, '', '- Select an Upazila --' );
-                const division = divisions.find( d => d.name === divisionName );
-                if ( division )
-                {
-                    const district = division.districts.find( dist => dist.name === districtName );
-                    if ( district )
-                    {
-                        district.upazilas.forEach( upz =>
-                        {
-                            addOption( upazilaSelect, upz, upz );
-                        } );
-                        upazilaSelect.disabled = false;
-                    } else
-                    {
-                        upazilaSelect.disabled = true;
-                    }
-                }
             }
-
-            function clearSelect( selectElem )
-            {
-                while ( selectElem.options.length > 0 )
-                {
-                    selectElem.remove( 0 );
-                }
-            }
-
-            function addOption( selectElem, value, text )
-            {
-                const option = document.createElement( 'option' );
-                option.value = value;
-                option.text = text;
-                selectElem.appendChild( option );
-            }
-
-            divisionSelect.addEventListener( 'change', e =>
-            {
-                const selectedDivision = e.target.value;
-                if ( selectedDivision )
-                {
-                    populateDistricts( selectedDivision );
-                } else
-                {
-                    districtSelect.disabled = true;
-                    upazilaSelect.disabled = true;
-                    clearSelect( districtSelect );
-                    clearSelect( upazilaSelect );
-                }
-            } );
-
-            districtSelect.addEventListener( 'change', e =>
-            {
-                const selectedDistrict = e.target.value;
-                const selectedDivision = divisionSelect.value;
-                if ( selectedDistrict )
-                {
-                    populateUpazilas( selectedDivision, selectedDistrict );
-                } else
-                {
-                    upazilaSelect.disabled = true;
-                    clearSelect( upazilaSelect );
-                }
-            } );
-
-            //window.onload = loadData;
-            document.addEventListener( "DOMContentLoaded", loadData );
-
-            
+        } );
+        document.addEventListener( "DOMContentLoaded", loadData );
     </script>
-
 </body>
 
 </html>
-
-

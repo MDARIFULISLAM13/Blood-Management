@@ -3,85 +3,106 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Blood Search</title>
+    <title>ROKTODAAN</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+        :root {
+            --primary: #c0392b;
+            --accent: #2980b9;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --bg: #f9f9f9;
+            --card-bg: #fff;
+            --shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background: #f9f9f9;
+            background: var(--bg);
         }
 
         header {
-            background: #c0392b;
+            background: var(--primary);
             color: white;
-            padding: 15px;
+            padding: 18px 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: var(--shadow);
         }
 
         header h1 {
             margin: 0;
-            font-size: 22px;
+            font-size: 1.6rem;
+            letter-spacing: 1px;
         }
 
         nav button {
             margin-left: 10px;
-            padding: 8px 14px;
+            padding: 8px 16px;
             border: none;
-            border-radius: 5px;
+            border-radius: 6px;
             cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.2s;
         }
 
         .btn-login {
-            background: #2980b9;
+            background: var(--accent);
             color: #fff;
         }
 
         .btn-signup {
-            background: #27ae60;
+            background: var(--success);
             color: #fff;
         }
 
         .btn-account {
-            background: #f39c12;
+            background: var(--warning);
             color: #fff;
         }
 
         .container {
-            max-width: 900px;
-            margin: 20px auto;
-            background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            margin: 30px auto;
+            background: var(--card-bg);
+            padding: 28px 18px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
         }
 
         h2 {
-            margin-bottom: 10px;
+            margin-bottom: 18px;
+            text-align: center;
+            color: var(--primary);
+            font-size: 1.3rem;
         }
 
         form {
             display: grid;
-            gap: 10px;
+            gap: 14px;
         }
 
         select,
         input,
         button {
-            padding: 10px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 1rem;
             width: 100%;
+            box-sizing: border-box;
         }
 
         button.search-btn {
-            background: #c0392b;
+            background: var(--primary);
             color: #fff;
             border: none;
             cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
         }
 
         button.search-btn:hover {
@@ -89,24 +110,105 @@
         }
 
         .results {
-            margin-top: 20px;
+            margin-top: 24px;
         }
 
         .card {
             background: #fafafa;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 10px;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            padding: 18px 14px;
+            margin-bottom: 14px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+            transition: box-shadow 0.2s;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 16px rgba(44, 62, 80, 0.08);
         }
 
         .card p {
-            margin: 5px 0;
+            margin: 6px 0;
         }
 
         .priority {
             font-weight: bold;
-            color: #c0392b;
+            color: var(--primary);
+        }
+
+        /* Notification styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            min-width: 220px;
+            background: #fff;
+            color: #333;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+            padding: 14px 22px;
+            font-size: 1rem;
+            z-index: 9999;
+            display: none;
+            animation: fadeIn 0.4s;
+        }
+
+        .notification.success {
+            border-left: 6px solid var(--success);
+        }
+
+        .notification.error {
+            border-left: 6px solid var(--primary);
+        }
+
+        .notification.info {
+            border-left: 6px solid var(--accent);
+        }
+
+        /* Spinner styles */
+        #loading-spinner {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.7);
+            z-index: 9998;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .spinner {
+            border: 7px solid #f3f3f3;
+            border-top: 7px solid var(--primary);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         @media(max-width:600px) {
@@ -118,14 +220,27 @@
             nav {
                 margin-top: 10px;
             }
+
+            .container {
+                padding: 16px 6px;
+            }
+
+            h2 {
+                font-size: 1.1rem;
+            }
+
+            select,
+            input,
+            button {
+                font-size: 0.95rem;
+            }
         }
     </style>
 </head>
 
 <body>
-
     <header>
-        <h1>Blood Management</h1>
+        <h1>ROKTODAAN</h1>
         <nav id="navBar"></nav>
     </header>
 
@@ -143,88 +258,81 @@
                 <option value="O+">O+</option>
                 <option value="O-">O-</option>
             </select>
-
             <select id="divisionSelect" required>
                 <option value="">-- Select Division --</option>
             </select>
-
             <select id="districtSelect" disabled required>
                 <option value="">-- Select District --</option>
             </select>
-
             <select id="upazilaSelect" disabled required>
                 <option value="">-- Select Upazila --</option>
             </select>
-
             <label>When Needed:</label>
             <input type="date" id="neededDate" required>
-
-            <button type="submit" class="search-btn">Search</button>
+            <button type="submit" class="search-btn">🔍 Search</button>
         </form>
-
         <div class="results" id="results"></div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification"></div>
+    <!-- Loading Spinner -->
+    <div id="loading-spinner">
+        <div class="spinner"></div>
     </div>
 
     <script>
         const API = "http://localhost:4341/api";
-
-        // ✅ Navigation control
+        // Notification function
+        function showNotification( message, type = "info", duration = 2500 )
+        {
+            const notif = document.getElementById( "notification" );
+            notif.textContent = message;
+            notif.className = `notification ${type}`;
+            notif.style.display = "block";
+            setTimeout( () => { notif.style.display = "none"; }, duration );
+        }
+        // Navigation control
         function loadNav()
         {
             const nav = document.getElementById( "navBar" );
             const tokenMember = localStorage.getItem( "token_member" );
             const tokenMod = localStorage.getItem( "token_mod" );
             const tokenAdmin = localStorage.getItem( "token_admin" );
-
             if ( tokenMember || tokenMod || tokenAdmin )
             {
                 nav.innerHTML = `<button class="btn-account" onclick="goAccount()">Account</button>`;
             } else
             {
                 nav.innerHTML = `
-            <button class="btn-login" onclick="goLogin()">Login</button>
-            <button class="btn-signup" onclick="goSignup()">Sign Up</button>
-        `;
+                    <button class="btn-login" onclick="goLogin()">Login</button>
+                    <button class="btn-signup" onclick="goSignup()">Sign Up</button>
+                `;
             }
         }
-
-        function goLogin()
-        {
-            window.location.href = "../log in/login.html";
-        }
-
-        function goSignup()
-        {
-            window.location.href = "../Signup/Sign_up.html";
-        }
-
+        function goLogin() { window.location.href = "../log in/login.html"; }
+        function goSignup() { window.location.href = "../Signup/Sign_up.html"; }
         function goAccount()
         {
             const tokenAdmin = localStorage.getItem( "token_admin" );
             const tokenMember = localStorage.getItem( "token_member" );
             const tokenMod = localStorage.getItem( "token_mod" );
-
             if ( tokenAdmin )
             {
-                window.location.href = "../Accounts_Controller/Accounts/Admin/admin.html";   // Admin Page
-            }
-            else if ( tokenMod )
+                window.location.href = "../Accounts_Controller/Accounts/Admin/admin.html";
+            } else if ( tokenMod )
             {
-                window.location.href = "../Accounts_Controller/Accounts/moderators/moderator.html";   // Moderator Page
-            }
-            else if ( tokenMember )
+                window.location.href = "../Accounts_Controller/Accounts/moderators/moderator.html";
+            } else if ( tokenMember )
             {
-                window.location.href = "../Accounts_Controller/Accounts/Members/member.html";   // Member Page
+                window.location.href = "../Accounts_Controller/Accounts/Members/member.html";
             }
         }
-
-
-        // ✅ Dynamic location dropdown
+        // Dynamic location dropdown
         let divisions = [];
         const divisionSelect = document.getElementById( 'divisionSelect' );
         const districtSelect = document.getElementById( 'districtSelect' );
         const upazilaSelect = document.getElementById( 'upazilaSelect' );
-
         async function loadLocationData()
         {
             try
@@ -234,10 +342,9 @@
                 populateDivisions();
             } catch ( err )
             {
-                alert( "Failed to load location data" );
+                showNotification( "Failed to load location data", "error" );
             }
         }
-
         function populateDivisions()
         {
             clearSelect( divisionSelect );
@@ -246,7 +353,6 @@
             clearSelect( districtSelect ); addOption( districtSelect, "", "-- Select District --" );
             clearSelect( upazilaSelect ); addOption( upazilaSelect, "", "-- Select Upazila --" );
         }
-
         function populateDistricts( divisionName )
         {
             clearSelect( districtSelect );
@@ -257,12 +363,10 @@
                 division.districts.forEach( dist => addOption( districtSelect, dist.name, dist.name ) );
                 districtSelect.disabled = false;
             } else districtSelect.disabled = true;
-
             clearSelect( upazilaSelect );
             addOption( upazilaSelect, "", "-- Select Upazila --" );
             upazilaSelect.disabled = true;
         }
-
         function populateUpazilas( divisionName, districtName )
         {
             clearSelect( upazilaSelect );
@@ -278,10 +382,13 @@
                 }
             }
         }
-
         function clearSelect( selectElem ) { while ( selectElem.options.length > 0 ) selectElem.remove( 0 ); }
-        function addOption( selectElem, value, text ) { const opt = document.createElement( "option" ); opt.value = value; opt.text = text; selectElem.appendChild( opt ); }
-
+        function addOption( selectElem, value, text )
+        {
+            const opt = document.createElement( "option" );
+            opt.value = value; opt.text = text;
+            selectElem.appendChild( opt );
+        }
         divisionSelect.addEventListener( "change", e =>
         {
             if ( e.target.value ) populateDistricts( e.target.value );
@@ -290,8 +397,7 @@
         {
             if ( e.target.value ) populateUpazilas( divisionSelect.value, e.target.value );
         } );
-
-        // ✅ Blood search
+        // Blood search
         document.getElementById( "bloodSearchForm" ).addEventListener( "submit", async e =>
         {
             e.preventDefault();
@@ -300,42 +406,50 @@
             const District = districtSelect.value;
             const upazila = upazilaSelect.value;
             const neededDate = document.getElementById( "neededDate" ).value;
-
-            const res = await fetch( `${API}/search_blood`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify( { blood_group, Division, District, upazila, neededDate } )
-            } );
-
-            const data = await res.json();
-            const resultDiv = document.getElementById( "results" );
-            resultDiv.innerHTML = "";
-
-            if ( !Array.isArray( data ) || data.length === 0 )
+            // Show loading spinner
+            document.getElementById( "loading-spinner" ).style.display = "flex";
+            try
             {
-                resultDiv.innerHTML = "<p>No donors found.</p>";
-                return;
+                const res = await fetch( `${API}/search_blood`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify( { blood_group, Division, District, upazila, neededDate } )
+                } );
+                const data = await res.json();
+                const resultDiv = document.getElementById( "results" );
+                resultDiv.innerHTML = "";
+                if ( !Array.isArray( data ) || data.length === 0 )
+                {
+                    resultDiv.innerHTML = "<p>No donors found.</p>";
+                    showNotification( "No donors found for your search.", "info" );
+                } else
+                {
+                    showNotification( "Donors loaded successfully!", "success" );
+                    data.forEach( d =>
+                    {
+                        const card = `
+                            <div class="card">
+                                <p><b>${d.name}</b></p>
+                                <p><b>Mobile : </b> ${d.mobile}</p>
+                                <p><b>Location :</b> ${d.upazila}, ${d.District}, ${d.Division}</p>
+                                <p><b> Blood Group :</b> ${d.blood_group}</p>
+                                <p><b>Last Donate :</b> ${d.last_donate_date ? new Date( d.last_donate_date ).toLocaleDateString() : "N/A"}</p>
+                                <p class="priority">${d.priority}</p>
+                            </div>
+                        `;
+                        resultDiv.innerHTML += card;
+                    } );
+                }
+            } catch ( err )
+            {
+                showNotification( "Server error! Please try again.", "error" );
             }
-
-            data.forEach( d =>
-            {
-                const card = `
-        <div class="card">
-          <p><b>${d.name}</b> - ${d.mobile}</p>
-          <p>📍 ${d.Division}, ${d.District}, ${d.upazila}</p>
-          <p>🩸 Blood Group: ${d.blood_group}</p>
-          <p>Last Donate: ${new Date( d.last_donate_date ).toLocaleDateString()}</p>
-          <p class="priority">${d.priority}</p>
-        </div>
-      `;
-                resultDiv.innerHTML += card;
-            } );
+            // Hide loading spinner
+            document.getElementById( "loading-spinner" ).style.display = "none";
         } );
-
         loadNav();
         loadLocationData();
     </script>
-
 </body>
 
 </html>

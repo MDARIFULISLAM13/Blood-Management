@@ -29,11 +29,13 @@
             width: 90%;
             max-width: 400px;
             text-align: center;
+            position: relative;
         }
 
         h2 {
             margin-bottom: 20px;
-            color: #333;
+            color: #319795;
+            font-weight: 600;
         }
 
         input {
@@ -55,7 +57,7 @@
         button {
             width: 100%;
             padding: 12px;
-            background: #38b2ac;
+            background: linear-gradient(90deg, #38b2ac 60%, #319795 100%);
             border: none;
             border-radius: 8px;
             font-size: 16px;
@@ -71,10 +73,96 @@
             transform: scale(1.05);
         }
 
-        .error {
-            color: red;
-            font-size: 14px;
-            margin-top: 8px;
+        /* Notification styles */
+        .notification {
+            position: fixed;
+            top: 22px;
+            left: 50%;
+            transform: translateX(-50%);
+            min-width: 220px;
+            background: #fff;
+            color: #333;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+            padding: 14px 22px;
+            font-size: 1rem;
+            z-index: 9999;
+            display: none;
+            animation: fadeIn 0.4s;
+        }
+
+        .notification.success {
+            border-left: 6px solid #28a745;
+        }
+
+        .notification.error {
+            border-left: 6px solid #c0392b;
+        }
+
+        .notification.info {
+            border-left: 6px solid #38b2ac;
+        }
+
+        /* Spinner styles */
+        #loading-spinner {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.7);
+            z-index: 9998;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .spinner {
+            border: 7px solid #f3f3f3;
+            border-top: 7px solid #38b2ac;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media(max-width: 480px) {
+            .login-box {
+                padding: 14px 4px;
+                border-radius: 10px;
+            }
+
+            input,
+            button {
+                font-size: 14px;
+                padding: 10px;
+            }
+
+            h2 {
+                font-size: 1.1rem;
+            }
         }
     </style>
 </head>
@@ -85,26 +173,33 @@
         <input type="text" id="details" placeholder="Enter Email or Mobile" required />
         <input type="password" id="password" placeholder="Enter Password" required />
         <button id="loginBtn">Login</button>
-        <p class="error" id="errorMsg"></p>
     </div>
-
+    <div id="notification" class="notification"></div>
+    <div id="loading-spinner">
+        <div class="spinner"></div>
+    </div>
     <script>
         const backendURL = "http://localhost:4341/api/moderator/login";
-
+        function showNotification( message, type = "info", duration = 2500 )
+        {
+            const notif = document.getElementById( "notification" );
+            notif.textContent = message;
+            notif.className = `notification ${type}`;
+            notif.style.display = "block";
+            setTimeout( () => { notif.style.display = "none"; }, duration );
+        }
         document.getElementById( "loginBtn" ).addEventListener( "click", async () =>
         {
             const details = document.getElementById( "details" ).value.trim();
             const password = document.getElementById( "password" ).value.trim();
-            const errorMsg = document.getElementById( "errorMsg" );
-
-            errorMsg.textContent = "";
 
             if ( !details || !password )
             {
-                errorMsg.textContent = "All fields are required!";
+                showNotification( "All fields are required!", "error" );
                 return;
             }
-
+            document.getElementById( "loading-spinner" ).style.display = "flex";
+            await new Promise( resolve => setTimeout( resolve, 10 ) );
             try
             {
                 const res = await fetch( backendURL, {
@@ -112,23 +207,25 @@
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify( { details, password } )
                 } );
-
                 const data = await res.json();
-
                 if ( res.ok )
                 {
-                    alert( "Moderator login successful ✅" );
-                    localStorage.setItem( "token_mod", data.token ); // Save JWT
-                    window.location.href = "../../Accounts_Controller/Accounts/moderators/moderator.html"; // redirect to home
+                    showNotification( "Moderator login successful ✅", "success" );
+                    localStorage.setItem( "token_mod", data.token );
+                    setTimeout( () =>
+                    {
+                        window.location.href = "../../Accounts_Controller/Accounts/moderators/moderator.html";
+                    }, 1200 );
                 } else
                 {
-                    errorMsg.textContent = data.message || "Invalid login credentials";
+                    showNotification( data.message || "Invalid login credentials", "error" );
                 }
             } catch ( err )
             {
-                errorMsg.textContent = "Server error, try again later!";
+                showNotification( "Server error, try again later!", "error" );
                 console.error( err );
             }
+            document.getElementById( "loading-spinner" ).style.display = "none";
         } );
     </script>
 </body>

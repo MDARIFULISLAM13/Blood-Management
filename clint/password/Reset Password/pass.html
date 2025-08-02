@@ -4,70 +4,173 @@
 <head>
     <meta charset="UTF-8" />
     <title>Reset Password</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background: #f4f7f9;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(120deg, #e0f7fa, #fff);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            margin: 0;
         }
 
         .box {
             background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-            width: 350px;
+            padding: 28px 20px;
+            border-radius: 16px;
+            box-shadow: 0px 4px 18px rgba(44, 62, 80, 0.12);
+            width: 100%;
+            max-width: 370px;
             text-align: center;
+            position: relative;
         }
 
         h2 {
-            margin-bottom: 15px;
+            margin-bottom: 18px;
+            color: #2196f3;
+            font-size: 1.4rem;
         }
 
         input {
-            width: 90%;
-            padding: 10px;
+            width: 92%;
+            padding: 12px;
             margin: 10px 0;
             border: 1px solid #ddd;
-            border-radius: 8px;
+            border-radius: 9px;
+            font-size: 16px;
+            background: #f8f8f8;
+            transition: border 0.2s;
+        }
+
+        input:focus {
+            border-color: #2196f3;
+            outline: none;
+            background: #eafaf1;
         }
 
         button {
-            width: 95%;
-            padding: 10px;
-            background: #4cafef;
+            width: 96%;
+            padding: 12px;
+            background: #2196f3;
             border: none;
             color: white;
             font-size: 16px;
-            border-radius: 8px;
+            border-radius: 9px;
             cursor: pointer;
-            transition: 0.3s;
+            transition: background 0.2s;
             margin-top: 5px;
+            font-weight: bold;
         }
 
         button:hover {
-            background: #2196f3;
+            background: #1769aa;
         }
 
         .hidden {
             display: none;
         }
 
-        #msg {
-            margin-top: 15px;
-            font-size: 14px;
-            color: #333;
-        }
-
         .home-btn {
             background: #555 !important;
+            margin-top: 18px;
         }
 
         .home-btn:hover {
             background: #333 !important;
+        }
+
+        /* Notification styles */
+        .notification {
+            position: fixed;
+            top: 22px;
+            left: 50%;
+            transform: translateX(-50%);
+            min-width: 220px;
+            background: #fff;
+            color: #333;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+            padding: 14px 22px;
+            font-size: 1rem;
+            z-index: 9999;
+            display: none;
+            animation: fadeIn 0.4s;
+        }
+
+        .notification.success {
+            border-left: 6px solid #28a745;
+        }
+
+        .notification.error {
+            border-left: 6px solid #c0392b;
+        }
+
+        .notification.info {
+            border-left: 6px solid #2196f3;
+        }
+
+        /* Spinner styles */
+        #loading-spinner {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.7);
+            z-index: 9998;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .spinner {
+            border: 7px solid #f3f3f3;
+            border-top: 7px solid #2196f3;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .box {
+                padding: 12px 4px;
+                border-radius: 10px;
+            }
+
+            input,
+            button {
+                font-size: 15px;
+                padding: 10px;
+            }
+
+            h2 {
+                font-size: 1.1rem;
+            }
         }
     </style>
 </head>
@@ -75,89 +178,152 @@
 <body>
     <div class="box">
         <h2>Reset Password</h2>
-
         <!-- Step 1: Send OTP -->
         <div id="step1">
             <input type="email" id="email" placeholder="Enter your email" />
             <button onclick="requestOTP()">Send OTP</button>
         </div>
-
         <!-- Step 2: Verify OTP -->
         <div id="step2" class="hidden">
             <input type="text" id="otp" placeholder="Enter OTP" />
             <button onclick="verifyOTP()">Verify OTP</button>
         </div>
-
         <!-- Step 3: Set New Password -->
         <div id="step3" class="hidden">
             <input type="password" id="newPassword" placeholder="Enter New Password" />
             <button onclick="setPassword()">Set Password</button>
         </div>
-
         <!-- Always Visible Home Button -->
         <button class="home-btn" onclick="goHome()">Home</button>
-
-        <p id="msg"></p>
     </div>
-
+    <div id="notification" class="notification"></div>
+    <div id="loading-spinner">
+        <div class="spinner"></div>
+    </div>
     <script>
         let emailGlobal = "";
+
+        function showNotification( message, type = "info", duration = 2500 )
+        {
+            const notif = document.getElementById( "notification" );
+            notif.textContent = message;
+            notif.className = `notification ${type}`;
+            notif.style.display = "block";
+            setTimeout( () => { notif.style.display = "none"; }, duration );
+        }
 
         // STEP 1: Request OTP
         async function requestOTP()
         {
-            const email = document.getElementById( "email" ).value;
-            let res = await fetch( "http://localhost:4341/api/reset_password", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify( { email } )
-            } );
-            let data = await res.json();
-            document.getElementById( "msg" ).innerText = data.msg;
-            if ( data.status )
+            const email = document.getElementById( "email" ).value.trim();
+            if ( !email )
             {
-                // backend থেকে আসা email save করছি
-                emailGlobal = data.email;
-                document.getElementById( "step1" ).classList.add( "hidden" );
-                document.getElementById( "step2" ).classList.remove( "hidden" );
+                showNotification( "Please enter your email.", "error" );
+                return;
             }
+            document.getElementById( "loading-spinner" ).style.display = "flex";
+            await new Promise( resolve => setTimeout( resolve, 10 ) );
+            try
+            {
+                let res = await fetch( "http://localhost:4341/api/reset_password", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify( { email } )
+                } );
+                let data = await res.json();
+                if ( data.status )
+                {
+                    emailGlobal = data.email;
+                    showNotification( data.msg || "OTP sent to your email.", "success" );
+                    document.getElementById( "step1" ).classList.add( "hidden" );
+                    document.getElementById( "step2" ).classList.remove( "hidden" );
+                } else
+                {
+                    showNotification( data.msg || "Failed to send OTP.", "error" );
+                }
+            } catch ( err )
+            {
+                showNotification( "Server error. Try again.", "error" );
+            }
+            document.getElementById( "loading-spinner" ).style.display = "none";
         }
 
         // STEP 2: Verify OTP
         async function verifyOTP()
         {
-            const otp = document.getElementById( "otp" ).value;
-            let res = await fetch( "http://localhost:4341/api/verify", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify( { email: emailGlobal, otp } )
-            } );
-            let data = await res.json();
-            document.getElementById( "msg" ).innerText = data.message;
-            if ( data.message && data.message.includes( "verified" ) )
+            const otp = document.getElementById( "otp" ).value.trim();
+            if ( !otp )
             {
-                document.getElementById( "step2" ).classList.add( "hidden" );
-                document.getElementById( "step3" ).classList.remove( "hidden" );
+                showNotification( "Please enter the OTP.", "error" );
+                return;
             }
+            document.getElementById( "loading-spinner" ).style.display = "flex";
+            await new Promise( resolve => setTimeout( resolve, 10 ) );
+            try
+            {
+                let res = await fetch( "http://localhost:4341/api/verify", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify( { email: emailGlobal, otp } )
+                } );
+                let data = await res.json();
+                if ( data.message && data.message.includes( "verified" ) )
+                {
+                    showNotification( data.message, "success" );
+                    document.getElementById( "step2" ).classList.add( "hidden" );
+                    document.getElementById( "step3" ).classList.remove( "hidden" );
+                } else
+                {
+                    showNotification( data.message || "Invalid OTP.", "error" );
+                }
+            } catch ( err )
+            {
+                showNotification( "Server error. Try again.", "error" );
+            }
+            document.getElementById( "loading-spinner" ).style.display = "none";
         }
 
         // STEP 3: Set New Password
         async function setPassword()
         {
-            const newPassword = document.getElementById( "newPassword" ).value;
-            let res = await fetch( "http://localhost:4341/api/setNewPassword", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify( { email: emailGlobal, newPassword } )
-            } );
-            let data = await res.json();
-            document.getElementById( "msg" ).innerText = data.message;
+            const newPassword = document.getElementById( "newPassword" ).value.trim();
+            if ( !newPassword )
+            {
+                showNotification( "Please enter a new password.", "error" );
+                return;
+            }
+            document.getElementById( "loading-spinner" ).style.display = "flex";
+            await new Promise( resolve => setTimeout( resolve, 10 ) );
+            try
+            {
+                let res = await fetch( "http://localhost:4341/api/setNewPassword", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify( { email: emailGlobal, newPassword } )
+                } );
+                let data = await res.json();
+                if ( data.message && data.message.toLowerCase().includes( "success" ) )
+                {
+                    showNotification( data.message, "success" );
+                    setTimeout( () =>
+                    {
+                        window.location.href = "home.html";
+                    }, 1200 );
+                } else
+                {
+                    showNotification( data.message || "Failed to reset password.", "error" );
+                }
+            } catch ( err )
+            {
+                showNotification( "Server error. Try again.", "error" );
+            }
+            document.getElementById( "loading-spinner" ).style.display = "none";
         }
 
-        // Always visible Home Button
+        // Home Button
         function goHome()
         {
-            window.location.href = "../../index page/index.html"; // তোমার home page এর link বসাও
+            window.location.href = "home.html";
         }
     </script>
 </body>
