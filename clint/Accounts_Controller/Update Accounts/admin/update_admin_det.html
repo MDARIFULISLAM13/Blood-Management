@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="bn">
 
 <head>
@@ -139,9 +139,9 @@
     </div>
 
     <script>
-        const token = localStorage.getItem( "token_mod" );
-        const member_url = "http://localhost:4341/api/moderator_details"; // get user details
-        const update_url = "http://localhost:4341/api/update_moderator"; // update API
+        const token = localStorage.getItem( "token_admin" );
+        const member_url = "http://localhost:4341/api/admin_details"; // get user details
+        const update_url = "http://localhost:4341/api/update_admin"; // update API
 
         if ( !token )
         {
@@ -285,7 +285,7 @@
             if ( result.success )
             {
                 alert( "Details updated successfully!" );
-                window.location.href = "../../Accounts/moderators/moderator.html";
+                window.location.href = "../../Accounts/Admin/admin.html";
             } else
             {
                 alert( result.message || "Update failed!" );
@@ -300,6 +300,3 @@
 </body>
 
 </html>
-
-
-

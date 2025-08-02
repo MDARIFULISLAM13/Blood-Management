@@ -1,8 +1,9 @@
 
-const { jwtVerify_moderator } = require( "../../../jwt/Moderator/jwt_moderator" );
+const { jwtVerify_admin } = require( "../../../jwt/Admin/jwt_admin" );
+
 const usersmodel = require( "../../../models/usersmodel" );
 
-exports.update_moderator = async ( req, res ) =>
+exports.update_admin = async ( req, res ) =>
 {
     try
     {
@@ -14,7 +15,7 @@ exports.update_moderator = async ( req, res ) =>
         }
 
         // ✅ Step 1: Token verify
-        const decoded = jwtVerify_moderator( token );
+        const decoded = jwtVerify_admin( token );
         if ( !decoded )
         {
             return res.status( 401 ).json( { success: false, message: "Invalid or expired token" } );

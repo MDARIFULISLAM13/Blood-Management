@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Moderator Management</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #333;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            display: grid;
+            gap: 20px;
+        }
+
+        .box {
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .box:hover {
+            transform: translateY(-3px);
+        }
+
+        h2 {
+            margin-bottom: 10px;
+            color: #34495e;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 6px;
+            background: #3498db;
+            color: #fff;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        .message {
+            margin-top: 8px;
+            font-size: 14px;
+        }
+
+        .error {
+            color: #e74c3c;
+        }
+
+        .success {
+            color: #27ae60;
+        }
+
+        /* Moderator List */
+        .moderator-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .card {
+            background: #fafafa;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .card:hover {
+            transform: scale(1.03);
+        }
+
+        .card b {
+            color: #2c3e50;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 24px;
+            }
+
+            .box {
+                padding: 15px;
+            }
+
+            button {
+                width: 100%;
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Moderator Management</h1>
+    <div class="container">
+
+        <!-- Add Moderator -->
+        <div class="box">
+            <h2>Add Moderator</h2>
+            <input type="text" id="addMobile" placeholder="Enter Mobile Number">
+            <button onclick="addModerator()">Add</button>
+            <p id="addMessage" class="message"></p>
+        </div>
+
+        <!-- Remove Moderator -->
+        <div class="box">
+            <h2>Remove Moderator</h2>
+            <input type="text" id="removeMobile" placeholder="Enter Mobile Number">
+            <button onclick="removeModerator()">Remove</button>
+            <p id="removeMessage" class="message"></p>
+        </div>
+
+        <!-- All Moderators -->
+        <div class="box">
+            <h2>All Moderators</h2>
+            <div id="moderatorList" class="moderator-list"></div>
+        </div>
+    </div>
+
+    <script>
+        const API = "http://localhost:4341/api";
+
+        // Auto load moderators
+        window.onload = loadModerators;
+
+        async function loadModerators()
+        {
+            try
+            {
+                const res = await fetch( `${API}/get_moderators`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" }
+                } );
+                const data = await res.json();
+
+                const list = document.getElementById( 'moderatorList' );
+                list.innerHTML = "";
+
+                if ( !Array.isArray( data ) || data.length === 0 )
+                {
+                    list.innerHTML = "<p>No moderators found</p>";
+                    return;
+                }
+
+                data.forEach( m =>
+                {
+                    const address = `${m.Division}, ${m.District}, ${m.upazila}`;
+                    const donateDate = m.last_donate_date ? new Date( m.last_donate_date ).toLocaleDateString() : "N/A";
+                    const card = `
+          <div class="card">
+            <p><b>${m.name}</b></p>
+            <p>📱 ${m.mobile}</p>
+            <p>📍 ${address}</p>
+            <p>🩸 Last Donate: ${donateDate}</p>
+          </div>
+        `;
+                    list.innerHTML += card;
+                } );
+
+            } catch ( err )
+            {
+                document.getElementById( 'moderatorList' ).innerHTML = "<p class='error'>Error loading moderators</p>";
+            }
+        }
+
+        async function addModerator()
+        {
+            const mobile = document.getElementById( "addMobile" ).value.trim();
+            if ( !mobile )
+            {
+                document.getElementById( "addMessage" ).innerHTML = "<span class='error'>Please enter a mobile number</span>";
+                return;
+            }
+
+            const res = await fetch( `${API}/add_moderator`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify( { mobile } )
+            } );
+            const data = await res.json();
+
+            document.getElementById( "addMessage" ).innerHTML = data.message.includes( "successfully" )
+                ? `<span class='success'>${data.message}</span>`
+                : `<span class='error'>${data.message}</span>`;
+
+            loadModerators();
+        }
+
+        async function removeModerator()
+        {
+            const mobile = document.getElementById( "removeMobile" ).value.trim();
+            if ( !mobile )
+            {
+                document.getElementById( "removeMessage" ).innerHTML = "<span class='error'>Please enter a mobile number</span>";
+                return;
+            }
+
+            const res = await fetch( `${API}/remove_moderator`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify( { mobile } )
+            } );
+            const data = await res.json();
+
+            document.getElementById( "removeMessage" ).innerHTML = data.message.includes( "successfully" )
+                ? `<span class='success'>${data.message}</span>`
+                : `<span class='error'>${data.message}</span>`;
+
+            loadModerators();
+        }
+    </script>
+
+</body>
+
+</html>

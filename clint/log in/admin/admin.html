@@ -119,7 +119,7 @@
                 {
                     alert( "Admin login successful ✅" );
                     localStorage.setItem( "token_admin", data.token ); // Save JWT
-                    window.location.href = "../index page/index.html"; // redirect to admin dashboard
+                    window.location.href = "../../Accounts_Controller/Accounts/Admin/admin.html"; // redirect to admin dashboard
                 } else
                 {
                     errorMsg.textContent = data.message || "Invalid login credentials";

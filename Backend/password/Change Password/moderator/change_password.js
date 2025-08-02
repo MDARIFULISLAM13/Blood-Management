@@ -1,9 +1,11 @@
 
-const { jwtVerify_member, jwtGen_member } = require( "../../jwt/Member/jwt_member" );
-const usersmodel = require( "../../models/usersmodel" );
+
+const { jwtVerify_moderator } = require( "../../../jwt/Moderator/jwt_moderator" );
+const usersmodel = require( "../../../models/usersmodel" );
 
 
-exports.change_password = async ( req, res ) =>
+
+exports.change_password_moderator = async ( req, res ) =>
 {
     try
     {
@@ -15,7 +17,7 @@ exports.change_password = async ( req, res ) =>
         }
 
         // ✅ Step 1: Token verify
-        const decoded = jwtVerify_member( token );
+        const decoded = jwtVerify_moderator( token );
         if ( !decoded )
         {
             return res.status( 401 ).json( { success: false, message: "Invalid or expired token" } );

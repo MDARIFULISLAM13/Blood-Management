@@ -93,6 +93,7 @@
             cursor: pointer;
             transition: 0.3s;
         }
+
         .moderator_member_manage {
             margin-top: 25px;
             width: 100%;
@@ -121,7 +122,8 @@
             background: #e00202;
             transform: scale(1.05);
         }
-         .moderator_member_manage:hover {
+
+        .moderator_member_manage:hover {
             background: #b1042f;
             transform: scale(1.05);
         }
@@ -159,7 +161,8 @@
             .change_password {
                 font-size: 14px;
             }
-             .moderator_member_manage {
+
+            .moderator_member_manage {
                 font-size: 14px;
             }
         }
@@ -171,10 +174,13 @@
         <h2>My Account</h2>
         <div id="moderator_info">Loading...</div>
         <button class="update_moderator_details"
-            onclick="window.location.href='../../Update Accounts/moderator/update_moderator_det.html'">Update</button>
+            onclick="window.location.href='../../Update Accounts/admin/update_admin_det.html'">Update</button>
         <button class="change_password"
-            onclick="window.location.href='../../../password/Change Password/moderators/Change_password.html'">Change
+            onclick="window.location.href='../../../password/Change Password/admin/Change_password.html'">Change
             Password</button>
+            <button class="moderator_member_manage"
+                onclick="window.location.href='../../moderator manage/admin.html'">Manage
+                Moderator</button>
         <button class="moderator_member_manage"
             onclick="window.location.href='../../mod_member_manage/manage_member.html'">Manage
             Members</button>
@@ -185,8 +191,8 @@
     <script>
 
         const loginPage = "../../../log in/login.html";
-        const token = localStorage.getItem( "token_mod" );
-        const moderator_url = "http://localhost:4341/api/moderator_details";
+        const token = localStorage.getItem( "token_admin" );
+        const moderator_url = "http://localhost:4341/api/admin_details";
 
         if ( !token )
         {
@@ -205,7 +211,7 @@
                     if ( !data.success )
                     {
                         alert( data.message || "Invalid token!" );
-                        localStorage.removeItem( "token_mod" );
+                        localStorage.removeItem( "token_admin" );
                         window.location.href = loginPage;
                     } else
                     {
@@ -216,7 +222,7 @@
                 {
                     console.error( err );
                     alert( "Server error!" );
-                    localStorage.removeItem( "token_mod" );
+                    localStorage.removeItem( "token_admin" );
                     window.location.href = loginPage;
                 } );
         }
@@ -240,7 +246,7 @@
 
         function logout()
         {
-            localStorage.removeItem( "token_mod" );
+            localStorage.removeItem( "token_admin" );
             window.location.href = loginPage;
         }
     </script>

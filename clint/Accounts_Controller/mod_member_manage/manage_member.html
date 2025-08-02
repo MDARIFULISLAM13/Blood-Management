@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", sans-serif;
+            background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 30px 15px;
+        }
+
+        .container {
+            background: #fff;
+            width: 100%;
+            max-width: 600px;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 15px;
+        }
+
+        .search-box button {
+            padding: 12px 18px;
+            border: none;
+            border-radius: 8px;
+            background: #007bff;
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .search-box button:hover {
+            background: #0056b3;
+        }
+
+        .result {
+            margin-top: 15px;
+        }
+
+        .info {
+            background: #f9f9f9;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .edit-icon {
+            cursor: pointer;
+            color: #007bff;
+            font-size: 18px;
+            margin-left: 8px;
+        }
+
+        .edit-box {
+            margin-top: 10px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .edit-box input {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        .edit-box button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .save-btn {
+            background: #28a745;
+            color: white;
+        }
+
+        .cancel-btn {
+            background: #dc3545;
+            color: white;
+        }
+
+        .not-found {
+            text-align: center;
+            color: red;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        /* 🔄 Spinner Style */
+        .spinner {
+            margin: 20px auto;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #007bff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Member Management</h2>
+
+        <div class="search-box">
+            <input type="text" id="mobileInput" placeholder="Enter Mobile Number (11 digits)">
+            <button onclick="searchMember()">Search</button>
+        </div>
+
+        <div id="resultBox" class="result"></div>
+    </div>
+
+    <script>
+        const searchAPI = "http://localhost:4341/api/mod_member_manage"; // backend API
+        const updateAPI = "http://localhost:4341/api/update_last_donate_date"; // backend API
+
+        // 🔍 Search member
+        async function searchMember()
+        {
+            const mobile = document.getElementById( "mobileInput" ).value.trim();
+            const resultBox = document.getElementById( "resultBox" );
+
+            if ( !/^[0-9]{11}$/.test( mobile ) )
+            {
+                alert( "Please enter a valid 11-digit mobile number." );
+                return;
+            }
+
+            resultBox.innerHTML = `<div class="spinner"></div>`; // show spinner
+
+            try
+            {
+                const res = await fetch( searchAPI, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify( { mobile } )
+                } );
+
+                const data = await res.json();
+
+                if ( !data.success )
+                {
+                    resultBox.innerHTML = `<div class="not-found">${data.message || "User not found"}</div>`;
+                } else
+                {
+                    showMember( data.data );
+                }
+            } catch ( err )
+            {
+                console.error( err );
+                resultBox.innerHTML = `<div class="not-found">Server error!</div>`;
+            }
+        }
+
+        // 🧑 Show member details
+        function showMember( user )
+        {
+            const resultBox = document.getElementById( "resultBox" );
+            let date = user.last_donate_date ? new Date( user.last_donate_date ).toLocaleDateString() : "N/A";
+
+            resultBox.innerHTML = `
+        <div class="info"><b>Name:</b> ${user.name}</div>
+        <div class="info"><b>Division:</b> ${user.Division}</div>
+        <div class="info"><b>District:</b> ${user.District}</div>
+        <div class="info"><b>Upazila:</b> ${user.upazila}</div>
+        <div class="info"><b>Mobile:</b> ${user.mobile}</div>
+        <div class="info"><b>Blood Group:</b> ${user.blood_group}</div>
+        <div class="info">
+          <b>Last Donate Date:</b> <span id="donateDate">${date}</span>
+          <span class="edit-icon" onclick="showEditBox('${user.mobile}')">✏️</span>
+        </div>
+        <div id="editBox" class="edit-box" style="display:none;"></div>
+      `;
+        }
+
+        // ✏️ Show edit date input
+        function showEditBox( mobile )
+        {
+            const editBox = document.getElementById( "editBox" );
+            editBox.style.display = "flex";
+            editBox.innerHTML = `
+        <input type="date" id="newDate" />
+        <button class="save-btn" onclick="saveDate('${mobile}')">Save</button>
+        <button class="cancel-btn" onclick="cancelEdit()">Cancel</button>
+      `;
+        }
+
+        function cancelEdit()
+        {
+            const editBox = document.getElementById( "editBox" );
+            editBox.style.display = "none";
+            editBox.innerHTML = "";
+        }
+
+        // ✅ Save new donate date
+        async function saveDate( mobile )
+        {
+            const newDate = document.getElementById( "newDate" ).value;
+            if ( !newDate )
+            {
+                alert( "Please select a date." );
+                return;
+            }
+
+            const editBox = document.getElementById( "editBox" );
+            editBox.innerHTML = `<div class="spinner"></div>`; // show spinner
+
+            try
+            {
+                const res = await fetch( updateAPI, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify( { mobile, last_donate_date: newDate } )
+                } );
+
+                const data = await res.json();
+
+                if ( data.success )
+                {
+                    // সরাসরি UI আপডেট
+                    document.getElementById( "donateDate" ).innerText =
+                        new Date( data.data.last_donate_date ).toLocaleDateString();
+                    cancelEdit();
+                    alert( data.message );
+                } else
+                {
+                    editBox.innerHTML = "";
+                    alert( data.message || "Update failed!" );
+                }
+            } catch ( err )
+            {
+                console.error( err );
+                editBox.innerHTML = "";
+                alert( "Update failed!" );
+            }
+        }
+    </script>
+</body>
+
+</html>

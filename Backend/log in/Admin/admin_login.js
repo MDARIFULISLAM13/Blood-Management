@@ -1,5 +1,8 @@
 
-const { jwtGen_admin } = require( "../../jwt/jwt" );
+
+
+
+const { jwtGen_admin } = require( "../../jwt/Admin/jwt_admin" );
 const User = require( "../../models/usersmodel" );
 
 
@@ -24,13 +27,13 @@ exports.admin_login = async ( req, res ) =>
         try
         {
             const mobile = details;
-            const user = await User.findOne( {mobile} );
+            const user = await User.findOne( { mobile } );
             if ( !user ) return res.status( 401 ).json( { message: 'Invalid credentials' } );
             if ( !user.isVerified ) return res.status( 401 ).json( { message: 'Please verify your email first' } );
             if ( user.password !== password ) return res.status( 401 ).json( { message: 'Invalid credentials' } );
             if ( !user.admin ) return res.status( 401 ).json( { message: 'You are not Admin' } );
 
-            const token = jwtGen_admin( user._id, user.name );
+            const token = jwtGen_admin( user.email );
             return res.json( { token } );
 
 
@@ -51,7 +54,7 @@ exports.admin_login = async ( req, res ) =>
             if ( user.password !== password ) return res.status( 401 ).json( { message: 'Invalid credentials' } );
             if ( !user.admin ) return res.status( 401 ).json( { message: 'You are not Admin' } );
 
-            const token = jwtGen_admin( user._id, user.name );
+            const token = jwtGen_admin( user.email );
             return res.json( { token } );
 
 

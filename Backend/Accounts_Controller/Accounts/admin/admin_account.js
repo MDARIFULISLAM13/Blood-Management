@@ -1,10 +1,12 @@
 
-const { jwtVerify_moderator } = require( "../../../jwt/Moderator/jwt_moderator" );
+const { jwtVerify_admin } = require( "../../../jwt/Admin/jwt_admin" );
 const usersmodel = require( "../../../models/usersmodel" );
 
 
-exports.moderator_details = async ( req, res ) =>
+exports.admin_details = async ( req, res ) =>
 {
+
+    
     try
     {
         const { token } = req.body;  // frontend থেকে শুধু token আসবে
@@ -18,7 +20,7 @@ exports.moderator_details = async ( req, res ) =>
         }
 
         // 🔹 Step 1: Token verify (helper ব্যবহার)
-        const decoded =jwtVerify_moderator( token );
+        const decoded =jwtVerify_admin( token );
         if ( !decoded )
         {
             return res.status( 401 ).json( {
