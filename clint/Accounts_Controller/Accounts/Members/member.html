@@ -75,6 +75,24 @@
             transition: 0.3s;
             box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
         }
+         #Home {
+            background: linear-gradient(90deg, #054a57 60%, #764ba2 100%);
+            color: #fff;
+            padding: 13px;
+            width: 100%;
+            font-size: 17px;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px rgba(255, 107, 107, 0.08);
+        }
+
+        #Home:hover {
+            background: #5d2cad;
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.15);
+        }
 
         .update_details {
             background: linear-gradient(90deg, #6310cf 60%, #6a11cb 100%);
@@ -193,6 +211,11 @@
                 align-items: flex-start;
             }
 
+            #Home {
+                font-size: 14px;
+                padding: 10px;
+            }
+
             button {
                 font-size: 14px;
                 padding: 10px;
@@ -214,7 +237,9 @@
         <button class="change_password"
             onclick="window.location.href='../../../password/Change Password/members/change_password.html'">Change
             Password</button>
+        <button id="Home" onclick="window.location.href='../../../index page/index.html'">Homepage</button>
         <button class="logout-btn" onclick="logout()">Logout</button>
+
     </div>
     <div id="notification" class="notification"></div>
     <div id="loading-spinner">
@@ -238,7 +263,7 @@
         {
             if ( !token )
             {
-                showNotification( "Token not found!", "error" );
+                showNotification( "Session Expired. Please log in again.", "error" );
                 setTimeout( () => { window.location.href = loginPage; }, 1200 );
                 return;
             }
@@ -255,7 +280,7 @@
                 document.getElementById( "loading-spinner" ).style.display = "none";
                 if ( !data.success )
                 {
-                    showNotification( data.message || "Invalid token!", "error" );
+                    showNotification( data.message || "Session Expired. Please log in again.", "error" );
                     localStorage.removeItem( "token_member" );
                     setTimeout( () => { window.location.href = loginPage; }, 1200 );
                 } else
@@ -276,14 +301,14 @@
             const infoDiv = document.getElementById( "memberInfo" );
             let date = user.last_donate_date ? new Date( user.last_donate_date ).toLocaleDateString() : "N/A";
             infoDiv.innerHTML = `
-                <div class="info"><b>👤 Name:</b> ${user.name}</div>
-                <div class="info"><b>📍 Division:</b> ${user.Division}</div>
-                <div class="info"><b>🏙 District:</b> ${user.District}</div>
-                <div class="info"><b>📌 Upazila:</b> ${user.upazila}</div>
-                <div class="info"><b>📞 Mobile:</b> ${user.mobile}</div>
-                <div class="info"><b>✉️ Email:</b> ${user.email}</div>
-                <div class="info"><b>🩸 Blood Group:</b> ${user.blood_group}</div>
-                <div class="info"><b>📅 Last Donate Date:</b> ${date}</div>
+                <div class="info"><b> Name:</b> ${user.name}</div>
+                <div class="info"><b> Division:</b> ${user.Division}</div>
+                <div class="info"><b> District:</b> ${user.District}</div>
+                <div class="info"><b> Upazila:</b> ${user.upazila}</div>
+                <div class="info"><b> Mobile:</b> ${user.mobile}</div>
+                <div class="info"><b> Email:</b> ${user.email}</div>
+                <div class="info"><b> Blood Group:</b> ${user.blood_group}</div>
+                <div class="info"><b> Last Donate Date:</b> ${date}</div>
             `;
         }
 

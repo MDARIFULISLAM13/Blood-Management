@@ -72,6 +72,11 @@
             background: #319795;
         }
 
+        .home {
+            background: linear-gradient(90deg, #054a57 60%, #764ba2 100%);
+
+        }
+
         .admin {
             background: #e53e3e;
         }
@@ -124,6 +129,9 @@
             align-items: center;
         }
 
+
+
+
         .spinner {
             border: 7px solid #f3f3f3;
             border-top: 7px solid #667eea;
@@ -161,6 +169,11 @@
                 border-radius: 10px;
             }
 
+            #Home {
+                font-size: 14px;
+                padding: 10px;
+            }
+
             .btn {
                 font-size: 14px;
                 padding: 12px;
@@ -180,6 +193,8 @@
         <button class="btn moderator" onclick="goLogin('moderators/moderator.html')">Moderator Login</button>
         <button class="btn admin" onclick="goLogin('admin/admin.html')">Admin Login</button>
         <button class="btn admin" onclick="goLogin('../password/Reset password/pass.html')">Reset Password</button>
+        <button class="btn home" onclick="window.location.href='../index page/index.html'">Homepage</button>
+
     </div>
     <div id="notification" class="notification"></div>
     <div id="loading-spinner">

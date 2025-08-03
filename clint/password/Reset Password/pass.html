@@ -6,9 +6,11 @@
     <title>Reset Password</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
+
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(120deg, #e0f7fa, #fff);
+            font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(120deg, #e0f7fa, #fff 80%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -18,9 +20,9 @@
 
         .box {
             background: white;
-            padding: 28px 20px;
-            border-radius: 16px;
-            box-shadow: 0px 4px 18px rgba(44, 62, 80, 0.12);
+            padding: 32px 22px;
+            border-radius: 18px;
+            box-shadow: 0px 8px 32px rgba(44, 62, 80, 0.13);
             width: 100%;
             max-width: 370px;
             text-align: center;
@@ -28,17 +30,18 @@
         }
 
         h2 {
-            margin-bottom: 18px;
+            margin-bottom: 22px;
             color: #2196f3;
-            font-size: 1.4rem;
+            font-size: 1.5rem;
+            font-weight: 600;
         }
 
         input {
             width: 92%;
-            padding: 12px;
-            margin: 10px 0;
+            padding: 13px;
+            margin: 12px 0;
             border: 1px solid #ddd;
-            border-radius: 9px;
+            border-radius: 10px;
             font-size: 16px;
             background: #f8f8f8;
             transition: border 0.2s;
@@ -52,20 +55,21 @@
 
         button {
             width: 96%;
-            padding: 12px;
-            background: #2196f3;
+            padding: 13px;
+            background: linear-gradient(90deg, #2196f3 60%, #43cea2 100%);
             border: none;
             color: white;
             font-size: 16px;
-            border-radius: 9px;
+            border-radius: 10px;
             cursor: pointer;
-            transition: background 0.2s;
-            margin-top: 5px;
+            transition: background 0.2s, transform 0.2s;
+            margin-top: 7px;
             font-weight: bold;
         }
 
         button:hover {
             background: #1769aa;
+            transform: scale(1.03);
         }
 
         .hidden {
@@ -73,12 +77,12 @@
         }
 
         .home-btn {
-            background: #555 !important;
+            background: linear-gradient(90deg, #ff4b5c 60%, #2196f3 100%) !important;
             margin-top: 18px;
         }
 
         .home-btn:hover {
-            background: #333 !important;
+            background: #b1042f !important;
         }
 
         /* Notification styles */
@@ -90,7 +94,7 @@
             min-width: 220px;
             background: #fff;
             color: #333;
-            border-radius: 8px;
+            border-radius: 10px;
             box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
             padding: 14px 22px;
             font-size: 1rem;
@@ -190,7 +194,7 @@
         </div>
         <!-- Step 3: Set New Password -->
         <div id="step3" class="hidden">
-            <input type="password" id="newPassword" placeholder="Enter New Password" />
+            <input type="password" id="newPassword" placeholder="Enter New Password" minlength="4" required />
             <button onclick="setPassword()">Set Password</button>
         </div>
         <!-- Always Visible Home Button -->
@@ -292,6 +296,11 @@
                 showNotification( "Please enter a new password.", "error" );
                 return;
             }
+            if ( newPassword.length < 4 )
+            {
+                showNotification( "New password must be at least 4 characters.", "error" );
+                return;
+            }
             document.getElementById( "loading-spinner" ).style.display = "flex";
             await new Promise( resolve => setTimeout( resolve, 10 ) );
             try
@@ -307,7 +316,7 @@
                     showNotification( data.message, "success" );
                     setTimeout( () =>
                     {
-                        window.location.href = "home.html";
+                        window.location.href = "../../index page/index.html";
                     }, 1200 );
                 } else
                 {
@@ -320,10 +329,9 @@
             document.getElementById( "loading-spinner" ).style.display = "none";
         }
 
-        // Home Button
         function goHome()
         {
-            window.location.href = "home.html";
+            window.location.href = "../../index page/index.html";
         }
     </script>
 </body>

@@ -212,10 +212,10 @@
                 <option value="">-- Select an Upazila --</option>
             </select>
 
-            <label for="mobile">Mobile Number (11 digits)</label>
+            <label for="mobile">Mobile Number (Must be 11 digits)</label>
             <input type="text" id="mobile" name="mobile" required />
 
-            <label for="email">Email (must end with @gmail.com)</label>
+            <label for="email">Email</label>
             <input type="email" id="email" name="email" required />
 
             <label for="blood">Blood Group</label>
@@ -231,16 +231,18 @@
                 <option value="O-">O-</option>
             </select>
 
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" required />
+            <label for="password">Password (at least 4 characters)</label>
+            <input type="password" id="password" name="password"  minlength="4"  required />
 
-            <label for="retype_password">Retype Password</label>
+            <label for="retype_password">Confirm Password</label>
             <input type="password" id="retype_password" name="retype_password" required />
 
             <label for="last_donate_date">Last Donate Date</label>
             <input type="date" id="last_donate_date" name="last_donate_date" required />
 
             <button type="submit">Sign Up</button>
+            <button type="submit" onclick="window.location.href='../index page/index.html'">Homepage</button>
+
         </form>
     </div>
     <!-- Notification -->
@@ -269,17 +271,17 @@
             const password = form.password.value;
             const retypePassword = form.retype_password.value;
             const isMobileValid = /^[0-9]{11}$/.test( mobile );
-            const isEmailValid = email.endsWith( "@gmail.com" );
+          //  const isEmailValid = email.endsWith( "@gmail.com" );
             if ( !isMobileValid )
             {
                 showNotification( "Mobile number must be exactly 11 digits.", "error" );
                 return;
             }
-            if ( !isEmailValid )
-            {
-                showNotification( "Email must end with @gmail.com", "error" );
-                return;
-            }
+            // if ( !isEmailValid )
+            // {
+            //     showNotification( "Email must end with @gmail.com", "error" );
+            //     return;
+            // }
             if ( password !== retypePassword )
             {
                 showNotification( "Passwords do not match.", "error" );

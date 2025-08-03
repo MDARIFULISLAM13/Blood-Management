@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Member Management</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -13,8 +15,8 @@
         }
 
         body {
-            font-family: "Segoe UI", Arial, sans-serif;
-            background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+            font-family: "Montserrat", "Segoe UI", Arial, sans-serif;
+            background: linear-gradient(135deg, #74ebd5, #ACB6E5 80%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -26,32 +28,34 @@
             background: #fff;
             width: 100%;
             max-width: 600px;
-            padding: 28px 18px;
-            border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.13);
+            padding: 32px 20px 24px 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 32px rgba(44, 62, 80, 0.13);
             animation: fadeIn 0.5s ease-in-out;
+            position: relative;
         }
 
         h2 {
             text-align: center;
-            margin-bottom: 22px;
+            margin-bottom: 28px;
             color: #007bff;
-            font-size: 1.5rem;
-            font-weight: 600;
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 1px;
         }
 
         .search-box {
             display: flex;
             gap: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
         .search-box input {
             flex: 1;
-            padding: 12px;
-            border-radius: 8px;
+            padding: 14px;
+            border-radius: 10px;
             border: 1px solid #ccc;
-            font-size: 15px;
+            font-size: 16px;
             background: #f8f8f8;
             transition: border 0.2s;
         }
@@ -62,12 +66,13 @@
         }
 
         .search-box button {
-            padding: 12px 18px;
+            padding: 14px 20px;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             background: linear-gradient(90deg, #007bff 60%, #28a745 100%);
             color: white;
-            font-size: 15px;
+            font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
             transition: background 0.3s, transform 0.2s;
         }
@@ -78,24 +83,35 @@
         }
 
         .result {
-            margin-top: 15px;
+            margin-top: 18px;
         }
 
         .info {
             background: #f9f9f9;
-            padding: 12px;
-            margin: 8px 0;
-            border-radius: 8px;
+            padding: 14px;
+            margin: 10px 0;
+            border-radius: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            font-size: 16px;
+            transition: background 0.2s;
+        }
+
+        .info b {
+            color: #007bff;
+            min-width: 120px;
+        }
+
+        .info:hover {
+            background: #eaf3ff;
         }
 
         .edit-icon {
             cursor: pointer;
             color: #007bff;
-            font-size: 18px;
+            font-size: 20px;
             margin-left: 8px;
             transition: color 0.2s;
         }
@@ -114,16 +130,17 @@
         .edit-box input {
             padding: 8px;
             border: 1px solid #ccc;
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 15px;
         }
 
         .edit-box button {
-            padding: 8px 12px;
+            padding: 8px 14px;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 15px;
+            font-weight: 600;
         }
 
         .save-btn {
@@ -141,6 +158,28 @@
             color: #e74c3c;
             font-weight: bold;
             margin-top: 15px;
+            font-size: 17px;
+        }
+
+        /* Back Button */
+        .back-btn {
+            margin-top: 22px;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #ff4b5c 60%, #007bff 100%);
+            color: white;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            box-shadow: 0 2px 8px rgba(255, 75, 92, 0.08);
+        }
+
+        .back-btn:hover {
+            background: #b1042f;
+            transform: scale(1.03);
         }
 
         /* Notification styles */
@@ -152,7 +191,7 @@
             min-width: 220px;
             background: #fff;
             color: #333;
-            border-radius: 8px;
+            border-radius: 10px;
             box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
             padding: 14px 22px;
             font-size: 1rem;
@@ -222,7 +261,7 @@
         @media (max-width: 600px) {
             .container {
                 padding: 12px 4px;
-                border-radius: 10px;
+                border-radius: 12px;
             }
 
             h2 {
@@ -232,6 +271,14 @@
             .info {
                 flex-direction: column;
                 align-items: flex-start;
+                font-size: 15px;
+            }
+
+            .search-box input,
+            .search-box button,
+            .back-btn {
+                font-size: 15px;
+                padding: 10px;
             }
         }
     </style>
@@ -245,6 +292,7 @@
             <button onclick="searchMember()">Search</button>
         </div>
         <div id="resultBox" class="result"></div>
+        <button class="back-btn" onclick="window.history.back()">⬅️ Back</button>
     </div>
     <div id="notification" class="notification"></div>
     <div id="loading-spinner">

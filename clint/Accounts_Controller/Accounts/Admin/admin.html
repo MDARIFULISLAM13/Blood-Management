@@ -116,6 +116,17 @@
             transform: scale(1.05);
         }
 
+        .Home {
+            background: linear-gradient(90deg, #054a57 60%, #764ba2 100%);
+
+        }
+
+        .Home:hover {
+            background: linear-gradient(90deg, #054a57 60%, #764ba2 100%);
+
+            transform: scale(1.05);
+        }
+
         /* Notification styles */
         .notification {
             position: fixed;
@@ -228,6 +239,8 @@
             onclick="window.location.href='../../moderator manage/admin.html'">Manage Moderator</button>
         <button class="moderator_member_manage"
             onclick="window.location.href='../../mod_member_manage/manage_member.html'">Manage Members</button>
+        <button class="Home" onclick="window.location.href='../../../index page/index.html'">Homepage</button>
+
         <button class="logout-btn" onclick="logout()">Logout</button>
     </div>
     <div id="notification" class="notification"></div>

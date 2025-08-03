@@ -68,6 +68,20 @@
             transition: 0.3s;
         }
 
+        #Home {
+            background: linear-gradient(90deg, #054a57 60%, #764ba2 100%);
+            color: #fff;
+            padding: 13px;
+            width: 100%;
+            font-size: 17px;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px rgba(255, 107, 107, 0.08);
+        }
+
         button:hover {
             background: #b71c1c;
             transform: scale(1.05);
@@ -154,6 +168,11 @@
                 border-radius: 10px;
             }
 
+            #Home {
+                font-size: 16px;
+                padding: 10px;
+            }
+
             input,
             button {
                 font-size: 14px;
@@ -173,6 +192,8 @@
         <input type="text" id="details" placeholder="Enter Email or Mobile" required />
         <input type="password" id="password" placeholder="Enter Password" required />
         <button id="loginBtn">Login</button>
+        <button id="Home" onclick="window.location.href='../../index page/index.html'">Homepage</button>
+
     </div>
     <div id="notification" class="notification"></div>
     <div id="loading-spinner">

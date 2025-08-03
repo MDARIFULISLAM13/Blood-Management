@@ -64,12 +64,33 @@
             border: none;
             border-radius: 10px;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: background 0.2s, box-shadow 0.2s;
             box-shadow: 0 2px 8px rgba(102, 126, 234, 0.08);
+            margin-bottom: 12px;
         }
 
         #verifyOtpBtn:hover {
             background: #5a67d8;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+
+        #Home {
+            background: linear-gradient(90deg, #054a57 60%, #764ba2 100%);
+            color: #fff;
+            padding: 13px;
+            width: 100%;
+            font-size: 17px;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px rgba(255, 107, 107, 0.08);
+        }
+
+        #Home:hover {
+            background: #5d2cad;
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.15);
         }
 
         /* Notification styles */
@@ -154,7 +175,8 @@
             }
 
             #otpInput,
-            #verifyOtpBtn {
+            #verifyOtpBtn,
+            #Home {
                 font-size: 16px;
                 padding: 10px;
             }
@@ -171,6 +193,7 @@
         <h3>Enter OTP sent to your email</h3>
         <input type="text" id="otpInput" placeholder="Enter 6-digit OTP" maxlength="6" />
         <button id="verifyOtpBtn">Verify OTP</button>
+        <button id="Home" onclick="window.location.href='../index page/index.html'">Homepage</button>
     </div>
     <div id="notification" class="notification"></div>
     <div id="loading-spinner">
