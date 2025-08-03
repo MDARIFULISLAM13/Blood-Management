@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Signup Form</title>
+    <title>ROKTODAAN</title>
     <style>
         :root {
             --primary: #28a745;
@@ -232,7 +232,7 @@
             </select>
 
             <label for="password">Password (at least 4 characters)</label>
-            <input type="password" id="password" name="password"  minlength="4"  required />
+            <input type="password" id="password" name="password" minlength="4" required />
 
             <label for="retype_password">Confirm Password</label>
             <input type="password" id="retype_password" name="retype_password" required />
@@ -271,7 +271,7 @@
             const password = form.password.value;
             const retypePassword = form.retype_password.value;
             const isMobileValid = /^[0-9]{11}$/.test( mobile );
-          //  const isEmailValid = email.endsWith( "@gmail.com" );
+            //  const isEmailValid = email.endsWith( "@gmail.com" );
             if ( !isMobileValid )
             {
                 showNotification( "Mobile number must be exactly 11 digits.", "error" );
